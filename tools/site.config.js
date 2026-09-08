@@ -8,10 +8,10 @@ module.exports = {
   gtmId: 'GTM-MJQDDBTN',
   googleSiteVerification: 'adjj7vW4RoH5JQCDDH-uyrjnqN7wOL61wJgULHFCf1k',
 
-  // Web3Forms: replace YOUR_ACCESS_KEY with the real key from web3forms.com.
-  // Until then, forms fall back to WhatsApp so no lead is ever lost.
-  formEndpoint: 'https://api.web3forms.com/submit',
-  formAccessKey: 'YOUR_ACCESS_KEY',
+  // Lead forms post to a PHP handler that ships with the site (src/send.php).
+  // No third-party service, no account, no send quota. Change the recipient in
+  // src/send.php (MAIL_TO).
+  formEndpoint: '/send.php',
 
   phones: [
     { label: '050-565-0223', tel: '0505650223', name: 'מנחם' },

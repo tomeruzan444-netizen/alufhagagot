@@ -212,8 +212,8 @@ function renderForm(block, page, idx) {
 
   const action = CFG.formEndpoint;
   return `<form class="lead-form" data-lead${attr('action', action)} method="POST"${attr('data-whatsapp', CFG.whatsapp)} data-redirect="/עמוד-תודה/">
-        <input type="hidden" name="access_key" value="${esc(CFG.formAccessKey)}">
         <input type="hidden" name="subject" value="פנייה חדשה מהאתר - ${esc(page.title.split('|')[0].trim())}">
+        <input type="hidden" name="t" value="">
         <input type="hidden" name="from_page" value="${esc(page.pathname)}">
         <input type="checkbox" name="botcheck" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
         ${fields}
@@ -699,6 +699,7 @@ ${breadcrumbs}
 fs.mkdirSync(path.join(OUT, 'assets/css'), { recursive: true });
 fs.mkdirSync(path.join(OUT, 'assets/js'), { recursive: true });
 fs.copyFileSync('src/css/site.css', path.join(OUT, 'assets/css/site.css'));
+fs.copyFileSync('src/send.php', path.join(OUT, 'send.php'));
 fs.copyFileSync('src/js/site.js', path.join(OUT, 'assets/js/site.js'));
 
 let written = 0, skipped = [];
