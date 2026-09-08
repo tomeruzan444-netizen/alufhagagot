@@ -1,8 +1,23 @@
 {
-  "description": "",
+  "description": "Static rebuild of roofschamp.co.il (אלוף הגגות)",
   "dependencies": {
     "cheerio": "^1.2.0",
     "puppeteer-core": "^25.10.0",
     "sharp": "^0.35.4"
+  },
+  "name": "alufhagagot",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node tools/build.js && node tools/seo-files.js",
+    "verify": "node tools/verify.js",
+    "audit": "node tools/seo-audit.js",
+    "layout": "node tools/audit.js",
+    "browser": "node tools/final-check.js",
+    "shots": "node tools/shots.js",
+    "serve": "node tools/serve.js",
+    "check": "npm run build && npm run verify && npm run audit",
+    "crawl": "node tools/images.js && node tools/download-assets.js && node tools/webp.js",
+    "parse": "node tools/parse.js"
   }
 }

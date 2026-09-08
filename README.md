@@ -26,17 +26,36 @@ _shots/           ← צילומי מסך לבדיקה
 
 ```bash
 npm install
-node tools/parse.js          # HTML גולמי  → בלוקים סמנטיים
-node tools/build.js          # בלוקים      → 166 עמודי HTML
-node tools/seo-files.js      # sitemap / robots / redirects / 404
-node tools/verify.js         # השוואה מלאה מול האתר המקורי
-node tools/serve.js          # שרת מקומי על http://127.0.0.1:8181
-node tools/audit.js          # בדיקת גלישה אופקית בדסקטופ/טאבלט/מובייל
-node tools/shots.js          # צילומי מסך
+
+npm run build     # בונה מחדש את 166 העמודים + sitemap/robots/redirects/404
+npm run verify    # השוואה מלאה מול האתר המקורי שנזחל
+npm run audit     # ביקורת SEO ותוכן
+npm run check     # build + verify + audit ברצף
+
+npm run serve     # שרת מקומי על http://127.0.0.1:8181
+npm run layout    # בדיקת גלישה אופקית בדסקטופ/טאבלט/מובייל
+npm run browser   # טעינת מדגם עמודים בכרום אמיתי (פונט, תמונות, JS, מטא)
+npm run shots     # צילומי מסך
 ```
 
-`tools/fetch.sh` + `tools/images.js` + `tools/download-assets.js` מריצים זחילה
-מחדש מהאתר החי (לא נדרש אלא אם התוכן במקור השתנה).
+`npm run parse` מפרק מחדש את ה-HTML הגולמי לבלוקים, ו-`npm run crawl` מוריד
+מחדש מדיה ומייצר WebP. נדרשים רק אם התוכן באתר המקורי משתנה.
+
+## עבודה מול GitHub
+
+הריפו: <https://github.com/tomeruzan444-netizen/alufhagagot>
+
+```bash
+npm run check                       # לוודא שהכל עובר לפני העלאה
+git add -A && git commit -m "..."   # לשמור את השינוי
+git push                            # לעדכן את GitHub
+```
+
+`build/` נמצא בגיט בכוונה — הוא התוצר להעלאה. אפשר לחבר את הריפו ישירות
+ל-Cloudflare Pages או ל-Netlify עם `build` כתיקיית הפלט; שניהם קוראים אוטומטית
+את `build/_redirects` ואת `build/_headers` שכבר מוכנים.
+
+`node_modules/` ו-`_shots/` לא נשמרים בגיט (ראו [.gitignore](.gitignore)).
 
 ---
 
