@@ -49,6 +49,16 @@ ErrorDocument 404 /404.html
   ExpiresByType text/html "access plus 1 hour"
 </IfModule>
 
+# Staging / preview hosts must never enter the index - otherwise the temporary
+# Hostinger domain competes with roofschamp.co.il for the same content.
+<IfModule mod_setenvif.c>
+  SetEnvIf Host "hostingersite\.com$" IS_STAGING
+  SetEnvIf Host "^\d+\.\d+\.\d+\.\d+$" IS_STAGING
+</IfModule>
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow" env=IS_STAGING
+</IfModule>
+
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
