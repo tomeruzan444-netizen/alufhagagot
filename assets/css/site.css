@@ -566,3 +566,111 @@ html.a11y-nomotion * { animation: none !important; transition: none !important; 
 .post-list h3 { margin: 0 0 .35em; font-size: var(--step-1); color: var(--ink); }
 .post-list a:hover h3 { color: var(--brand-cta-hover); }
 .post-list p { margin: 0; color: var(--ink-2); font-size: .96rem; }
+
+/* ==========================================================================
+   Homepage landing layout
+   Only the homepage uses this; every other page keeps the article + sidebar
+   layout that mirrors the WordPress build.
+   ========================================================================== */
+
+.hp-eyebrow {
+  font-size: .95rem; font-weight: 800; letter-spacing: .02em;
+  color: var(--brand); margin: 0 0 .6rem;
+}
+
+/* ---------- hero ---------- */
+.hp-hero {
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  padding-block: clamp(3rem, 2rem + 7vw, 7rem);
+  border-bottom: 4px solid var(--brand-cta);
+}
+.hp-hero__inner { max-width: 760px; }
+.hp-hero h1 {
+  color: #fff;
+  font-size: clamp(1.9rem, 1.3rem + 2.6vw, 3.2rem);
+  line-height: 1.2;
+  margin-bottom: .6em;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, .35);
+}
+.hp-hero .hp-eyebrow { color: #ffc46b; }
+.hp-hero__cta { display: flex; flex-wrap: wrap; gap: .65rem; }
+.hp-hero__cta .btn span { display: inline-flex; align-items: baseline; gap: .38rem; }
+.btn--outline {
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, .55);
+  backdrop-filter: blur(4px);
+}
+.btn--outline:hover { background: #fff; color: var(--ink); border-color: #fff; }
+@media (max-width: 560px) {
+  .hp-hero__cta { flex-direction: column; align-items: stretch; }
+  .hp-hero__cta .btn { width: 100%; }
+}
+
+/* ---------- trust strip ---------- */
+.hp-trust { background: #fff; border-bottom: 1px solid var(--line); padding-block: clamp(1.8rem, 1.2rem + 2vw, 2.8rem); }
+.hp-trust__title { text-align: center; font-size: var(--step-2); margin-bottom: 1.4rem; }
+.hp-trust__grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem .6rem; list-style: none; margin: 0; padding: 0;
+}
+.hp-trust__grid li {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: .5rem; padding: .4rem .6rem;
+  border-inline-start: 1px solid var(--line-2);
+}
+.hp-trust__grid li:first-child { border-inline-start: 0; }
+@media (max-width: 720px) { .hp-trust__grid li { border-inline-start: 0; } }
+.hp-trust__icon {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--brand-soft); color: var(--brand-cta);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.hp-trust__icon svg { width: 23px; height: 23px; fill: currentColor; }
+.hp-trust__icon svg[fill="none"] { fill: none; }
+.hp-trust__text { font-weight: 700; font-size: .95rem; color: var(--ink-2); line-height: 1.4; }
+
+/* ---------- service cards ---------- */
+.hp-services { padding-block: clamp(2.4rem, 1.6rem + 3vw, 4rem); background: var(--bg-2); }
+.hp-sec-head { margin-bottom: 1.5rem; }
+.hp-sec-head h2 { font-size: var(--step-3); margin: 0; }
+.hp-cards {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: .9rem; list-style: none; margin: 0; padding: 0;
+}
+.hp-card {
+  border-radius: var(--radius); overflow: hidden;
+  background: linear-gradient(150deg, #2b333d 0%, #171c22 100%);
+  background-size: cover; background-position: center;
+  box-shadow: var(--shadow); min-height: 132px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.hp-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.hp-card a {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: .6rem;
+  height: 100%; min-height: 132px; padding: 1rem 1.05rem;
+  color: #fff; text-decoration: none; font-weight: 800; font-size: 1.02rem;
+}
+.hp-card a:hover { color: #fff; }
+.hp-card svg { width: 20px; height: 20px; flex: none; color: var(--brand); transition: transform .2s ease; }
+.hp-card:hover svg { transform: translateX(-4px); }
+
+/* ---------- lead + calculator ---------- */
+.hp-lead { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(1.4rem, 1rem + 2vw, 2.6rem); align-items: start; }
+@media (max-width: 900px) { .hp-lead { grid-template-columns: 1fr; } }
+
+/* ---------- dark band ---------- */
+.hp-band {
+  background: linear-gradient(150deg, #1b2129 0%, #2a323d 100%);
+  color: #e6ebf1;
+  padding-block: clamp(2.4rem, 1.6rem + 3vw, 4rem);
+  text-align: center;
+}
+.hp-band h2 { color: #fff; font-size: var(--step-3); }
+.hp-band p { color: #c7d0da; }
+.hp-band a:not(.btn) { color: #ffcb8a; }
+.hp-band__cta { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-top: 1.6rem; }
+.hp-band__cta .btn--ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .5); }
+.hp-band__cta .btn--ghost:hover { background: #fff; color: var(--ink); }
