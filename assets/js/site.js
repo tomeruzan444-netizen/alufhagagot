@@ -71,27 +71,17 @@
 
   /* ---------- lead forms ---------- */
   Array.prototype.forEach.call(document.querySelectorAll('form[data-lead]'), function (form) {
+    // the handler rejects anything submitted within a few seconds of render
+    var stamp = form.querySelector('input[name="t"]');
+    if (stamp) stamp.value = String(Math.floor(Date.now() / 1000));
+
     form.addEventListener('submit', function (e) {
       var status = form.querySelector('.form-status');
       var endpoint = form.getAttribute('action') || '';
       // Honeypot: silently drop bot submissions.
       var hp = form.querySelector('input[name="botcheck"]');
       if (hp && hp.value) { e.preventDefault(); return; }
-      // Until a real endpoint key is configured, fall back to WhatsApp so no lead is lost.
-      if (endpoint.indexOf('YOUR_ACCESS_KEY') !== -1 || !endpoint) {
-        e.preventDefault();
-        var wa = form.getAttribute('data-whatsapp');
-        if (!wa) { if (status) { status.textContent = 'הטופס עדיין לא חובר. אנא התקשרו אלינו.'; status.setAttribute('data-state', 'err'); } return; }
-        var parts = [];
-        Array.prototype.forEach.call(form.querySelectorAll('input, textarea, select'), function (f) {
-          if (!f.name || f.name === 'botcheck' || f.type === 'hidden' || !f.value) return;
-          var lbl = f.getAttribute('data-label') || f.placeholder || f.name;
-          parts.push(lbl + ': ' + f.value);
-        });
-        window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(parts.join('\n')), '_blank', 'noopener');
-        return;
-      }
-      // Real endpoint: submit via fetch so the visitor stays on the page.
+      // Submit via fetch so the visitor stays on the page.
       e.preventDefault();
       var btn = form.querySelector('[type="submit"]');
       var original = btn ? btn.textContent : '';
@@ -105,14 +95,19 @@
         .then(function (data) {
           if (data && (data.success || data.ok)) {
             form.reset();
-            if (status) { status.textContent = 'תודה! קיבלנו את הפנייה ונחזור אליכם בהקדם.'; status.setAttribute('data-state', 'ok'); }
+            if (stamp) stamp.value = String(Math.floor(Date.now() / 1000));
+            if (status) {
+              status.textContent = (data && data.message) || 'תודה! קיבלנו את הפנייה ונחזור אליכם בהקדם.';
+              status.setAttribute('data-state', 'ok');
+            }
             var to = form.getAttribute('data-redirect');
-            if (to) setTimeout(function () { window.location.href = to; }, 900);
-          } else {
-            if (status) { status.textContent = 'משהו השתבש. אפשר להתקשר אלינו ישירות.'; status.setAttribute('data-state', 'err'); }
+            if (to) setTimeout(function () { window.location.href = to; }, 1200);
+          } else if (status) {
+            status.textContent = (data && data.message) || 'משהו השתבש. אפשר להתקשר אלינו: 050-565-0223';
+            status.setAttribute('data-state', 'err');
           }
         }).catch(function () {
-          if (status) { status.textContent = 'משהו השתבש. אפשר להתקשר אלינו ישירות.'; status.setAttribute('data-state', 'err'); }
+          if (status) { status.textContent = 'השליחה נכשלה. אפשר להתקשר אלינו: 050-565-0223'; status.setAttribute('data-state', 'err'); }
         }).then(function () {
           if (btn) { btn.disabled = false; btn.textContent = original; }
         });
