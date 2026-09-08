@@ -13,6 +13,10 @@ const SEO = require('./seo-overrides.js');
 
 const BASE = (process.argv[2] || 'http://127.0.0.1:8181').replace(/\/$/, '');
 const UA = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
+// On a preview host the site deliberately sends X-Robots-Tag: noindex, so the
+// header must not be read as an accidental block. The <meta> tag still tells
+// us what the real domain will serve.
+const IS_STAGING = /hostingersite\.com|^https?:\/\/\d+\.\d+\.\d+\.\d+/.test(BASE);
 
 const pages = JSON.parse(fs.readFileSync('_source/pages.json', 'utf8'));
 const skip = new Set(CFG.redirects.map(r => r.from));
@@ -38,6 +42,7 @@ function get(url) {
   const stats = { ok: 0, words: [], h1: 0, canon: 0, indexable: 0, schema: 0 };
 
   let i = 0;
+  if (IS_STAGING) console.log('(preview host: the site-wide X-Robots-Tag noindex is expected and ignored)');
   process.stdout.write('fetching ' + live.length + ' pages as Googlebot');
   async function worker() {
     while (i < live.length) {
@@ -54,7 +59,7 @@ function get(url) {
       const robots = ($('meta[name="robots"]').attr('content') || '').toLowerCase();
       const xrobots = String(res.headers['x-robots-tag'] || '').toLowerCase();
       const shouldNoindex = NOINDEX.has(p.pathname);
-      const isNoindex = /noindex/.test(robots) || /noindex/.test(xrobots);
+      const isNoindex = /noindex/.test(robots) || (!IS_STAGING && /noindex/.test(xrobots));
       if (isNoindex !== shouldNoindex) {
         problems.push([tag, shouldNoindex ? 'should be noindex but is indexable' : 'blocked by noindex (' + (robots || xrobots) + ')']);
       } else if (!shouldNoindex) stats.indexable++;

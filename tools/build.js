@@ -9,6 +9,7 @@ const { scopeCss } = require('./scope-css.js');
 const FIX = require('./content-fixes.js');
 const SEO = require('./seo-overrides.js');
 const LINKS = require('./internal-links.js');
+const HOME = require('./home-layout.js');
 
 const pages = JSON.parse(fs.readFileSync('_source/pages.json', 'utf8'));
 const OUT = 'build';
@@ -120,6 +121,14 @@ const ICON = {
   list: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h2v2H3V6zm4 0h14v2H7V6zM3 11h2v2H3v-2zm4 0h14v2H7v-2zm-4 5h2v2H3v-2zm4 0h14v2H7v-2z"/></svg>',
   mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>',
   a11y: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm8 5.2-5.3 1.1v3.3l1.9 8.1a1 1 0 0 1-1.9.5L12 14l-2.7 6.2a1 1 0 0 1-1.9-.5l1.9-8.1V8.3L4 7.2a1 1 0 1 1 .4-2l4.9 1a13 13 0 0 0 5.4 0l4.9-1a1 1 0 1 1 .4 2z"/></svg>',
+  trust: {
+    shield: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5.4v5.3c0 5 3.4 9.7 8 11.3 4.6-1.6 8-6.3 8-11.3V5.4L12 2zm-1.2 14.2-3.5-3.5 1.4-1.4 2.1 2.1 5-5 1.4 1.4-6.4 6.4z"/></svg>',
+    building: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V7l6-4 6 4v3h6v11H3zm2-2h4v-3H5v3zm0-5h4v-3H5v3zm0-5h4V6H5v3zm6 10h4v-3h-4v3zm0-5h4v-3h-4v3zm0-5h4V6h-4v3zm6 10h4v-3h-4v3zm0-5h4v-3h-4v3z"/></svg>',
+    tag: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5V4a1 1 0 0 0-1-1h-7.5a1 1 0 0 0-.7.3l-8.5 8.5a1 1 0 0 0 0 1.4l7.5 7.5a1 1 0 0 0 1.4 0l8.5-8.5a1 1 0 0 0 .3-.7zM17 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.4 2"/></svg>',
+    spark: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4.2 3.8 7 8 8-4.2 1-7 3.8-8 8-1-4.2-3.8-7-8-8 4.2-1 7-3.8 8-8z"/></svg>',
+    star: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 17.3-6.2 3.7 1.6-7L2 9.2l7.2-.6L12 2l2.8 6.6 7.2.6-5.4 4.8 1.6 7z"/></svg>',
+  },
   social: {
     Facebook: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1z"/></svg>',
     Youtube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23 12s0-3.5-.5-5.1a2.7 2.7 0 0 0-1.9-1.9C18.9 4.5 12 4.5 12 4.5s-6.9 0-8.6.5A2.7 2.7 0 0 0 1.5 6.9C1 8.5 1 12 1 12s0 3.5.5 5.1a2.7 2.7 0 0 0 1.9 1.9c1.7.5 8.6.5 8.6.5s6.9 0 8.6-.5a2.7 2.7 0 0 0 1.9-1.9C23 15.5 23 12 23 12zM9.8 15.4V8.6l5.8 3.4-5.8 3.4z"/></svg>',
@@ -548,6 +557,126 @@ function renderPage(page) {
 
   const ctaSection = '';
 
+  /* ------------------------------------------------------ homepage layout */
+  // The landing layout only rearranges blocks that already exist on the page.
+  function renderHome() {
+    const P = HOME.plan(page.blocks);
+    const heroImg = HOME.HERO_PHOTO;
+    const heroWebp = heroImg.replace(/\.(png|jpe?g)$/i, '.webp');
+
+    const trust = P.trustList ? `<section class="hp-trust">
+      <div class="wrap">
+        ${P.trustHeading ? `<h2 class="hp-trust__title">${esc(FIX.fixText(P.trustHeading.text, CURRENT_PAGE))}</h2>` : ''}
+        <ul class="hp-trust__grid">
+          ${P.trustList.items.map((it, i) => `<li>
+            <span class="hp-trust__icon">${ICON.trust[HOME.TRUST_ICONS[i % HOME.TRUST_ICONS.length]]}</span>
+            <span class="hp-trust__text">${esc(it.text)}</span>
+          </li>`).join('\n          ')}
+        </ul>
+      </div>
+    </section>` : '';
+
+    const services = P.servicesList ? `<section class="hp-services">
+      <div class="wrap">
+        <div class="hp-sec-head">
+          <p class="hp-eyebrow">השירותים שלנו</p>
+          ${P.servicesLabel ? `<h2>${esc(P.servicesLabel.text)}</h2>` : ''}
+        </div>
+        <ul class="hp-cards">
+          ${P.servicesList.items.map(it => {
+      const photo = it.href ? HOME.SERVICE_PHOTOS[decodeURIComponent(it.href)] : null;
+      const style = photo
+        ? ` style="background-image:linear-gradient(to top,rgba(14,17,22,.88) 0%,rgba(14,17,22,.35) 60%,rgba(14,17,22,.2) 100%),url('${encodeURI(photo)}')"`
+        : '';
+      return `<li class="hp-card${photo ? ' has-photo' : ''}"${style}>
+            <a href="${escRaw(it.href || '#')}">
+              <span>${esc(it.text)}</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </li>`;
+    }).join('\n          ')}
+        </ul>
+      </div>
+    </section>` : '';
+
+    const leadSection = (P.form || P.calc) ? `<section class="section" id="lead">
+      <div class="wrap">
+        <div class="hp-lead">
+          <div class="card card-pad">
+            ${P.formHeading ? `<h2 class="form-title">${esc(P.formHeading.text)}</h2>` : ''}
+            <p class="form-sub">ייעוץ והצעת מחיר - ללא עלות וללא התחייבות.</p>
+            ${P.form ? renderForm(P.form, page, 10) : ''}
+          </div>
+          <div>
+            ${P.calcHeading ? `<h2>${esc(FIX.fixText(P.calcHeading.text, CURRENT_PAGE))}</h2>` : ''}
+            ${P.calc ? renderBlock(P.calc, 11) : ''}
+          </div>
+        </div>
+      </div>
+    </section>` : '';
+
+    const band = P.bandHeading ? `<section class="hp-band">
+      <div class="wrap-narrow">
+        <h2>${esc(FIX.fixText(P.bandHeading.text, CURRENT_PAGE))}</h2>
+        ${P.bandText ? enhanceHtml(P.bandText.html) : ''}
+        <p class="hp-band__cta">
+          <a class="btn btn--primary btn--lg" href="tel:${escRaw(CFG.phones[0].tel)}">${ICON.phone}${esc(CFG.phones[0].name)} ${esc(CFG.phones[0].label)}</a>
+          <a class="btn btn--ghost btn--lg" href="#lead">${esc(P.formHeading ? P.formHeading.text : 'השאירו פרטים')}</a>
+        </p>
+      </div>
+    </section>` : '';
+
+    const body = P.article.length ? `<section class="section">
+      <div class="wrap-narrow"><div class="prose">
+        ${P.article.map(renderBlock).filter(Boolean).join('\n        ')}
+      </div></div>
+    </section>` : '';
+
+    const areas = P.areasList ? `<section class="section section--tint">
+      <div class="wrap">
+        ${P.areasLabel ? `<h2>${esc(P.areasLabel.text)}</h2>` : ''}
+        <ul class="link-grid">${P.areasList.items.map(it =>
+      `<li><a href="${escRaw(it.href || '#')}">${esc(it.text)}</a></li>`).join('')}</ul>
+      </div>
+    </section>` : '';
+
+    // whatever the plan did not claim (warranty image, video, daily tip …)
+    const extras = P.rest.length ? `<section class="section">
+      <div class="wrap-narrow"><div class="prose">
+        ${P.rest.map(renderBlock).filter(Boolean).join('\n        ')}
+      </div></div>
+    </section>` : '';
+
+    const contact = P.contactForm ? `<section class="section section--tint">
+      <div class="wrap-narrow">
+        <div class="card card-pad">
+          ${P.contactLabel ? `<h2 class="form-title">${esc(P.contactLabel.text)}</h2>` : ''}
+          <p class="form-sub">נחזור אליכם עם הצעת מחיר מותאמת.</p>
+          ${renderForm(P.contactForm, page, 12)}
+        </div>
+      </div>
+    </section>` : '';
+
+    return `<section class="hp-hero" style="background-image:linear-gradient(90deg,rgba(10,13,18,.94) 0%,rgba(10,13,18,.80) 42%,rgba(10,13,18,.50) 100%),url('${encodeURI(heroImg)}')">
+      <div class="wrap hp-hero__inner">
+        ${P.lede ? `<p class="hp-eyebrow">${esc(cheerio.load('<d>' + P.lede.html + '</d>')('d').text().trim())}</p>` : ''}
+        <h1>${esc(FIX.fixText(P.h1 ? P.h1.text : page.title, CURRENT_PAGE))}</h1>
+        <div class="hp-hero__cta">
+          <a class="btn btn--primary btn--lg" href="#lead">${esc(P.formHeading ? P.formHeading.text : 'השאירו פרטים')}</a>
+          ${CFG.phones.map(ph => `<a class="btn btn--outline btn--lg" href="tel:${escRaw(ph.tel)}">${ICON.phone}<span>${esc(ph.name)} <b>${esc(ph.label)}</b></span></a>`).join('\n          ')}
+        </div>
+      </div>
+    </section>
+    ${trust}
+    ${services}
+    ${leadSection}
+    ${band}
+    ${body}
+    ${areas}
+    ${extras}
+    ${contact}`;
+  }
+
   /* ------------------------------------------------------------- <head> */
   const canonical = page.canonical || (CFG.origin + page.rawPathname);
   const schemaTags = page.schema.map(s =>
@@ -630,10 +759,10 @@ ${schemaTags}
 ${breadcrumbs}
 
 <main id="main">
-    ${heroSection}
+${isHome ? renderHome() : `    ${heroSection}
     ${heroExtra}
     ${articleSection}
-    ${ctaSection}
+    ${ctaSection}`}
 </main>
 
 <footer class="site-footer">
