@@ -90,33 +90,20 @@ fs.writeFileSync(path.join(OUT, '_redirects'),
 fs.writeFileSync('deploy/nginx-redirects.conf',
   CFG.redirects.map(r => `rewrite ^${enc(r.from).replace(/\/$/, '')}/?$ ${enc(r.to)} permanent;`).join('\n') + '\n', 'utf8');
 
-// Apache
+// Apache / LiteSpeed (Hostinger runs LiteSpeed, which reads .htaccess).
+// The template lives in src/htaccess.tpl so its regexes are not mangled by
+// JavaScript string escaping.
+const redirectRules = CFG.redirects.map(r => {
+  const from = enc(r.from);          // percent-encoded, with trailing slash
+  const to = enc(r.to);
+  const fromNoSlash = from.replace(/\/$/, '');
+  return '  RewriteCond %{REQUEST_URI} ^' + fromNoSlash + '/?$ [NC]\n' +
+    '  RewriteRule ^ ' + to + ' [R=301,L,NE]';
+}).join('\n');
+
 fs.writeFileSync(path.join(OUT, '.htaccess'),
-`Options -Indexes
-DirectoryIndex index.html
-
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-${CFG.redirects.map(r => `  RewriteRule ^${enc(r.from).replace(/^\//, '').replace(/\/$/, '')}/?$ ${enc(r.to)} [R=301,L]`).join('\n')}
-</IfModule>
-
-ErrorDocument 404 /404.html
-
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml application/json
-</IfModule>
-
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresByType text/css "access plus 1 year"
-  ExpiresByType application/javascript "access plus 1 year"
-  ExpiresByType image/png "access plus 1 year"
-  ExpiresByType image/jpeg "access plus 1 year"
-  ExpiresByType image/webp "access plus 1 year"
-  ExpiresByType font/woff2 "access plus 1 year"
-  ExpiresByType text/html "access plus 1 hour"
-</IfModule>
-`, 'utf8');
+  fs.readFileSync('src/htaccess.tpl', 'utf8').replace('__REDIRECTS__', redirectRules),
+  'utf8');
 
 /* ------------------------------------------------------------------- 404 */
 const sample = fs.readFileSync(path.join(OUT, 'איטום-גגות', 'index.html'), 'utf8');
