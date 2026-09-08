@@ -93,17 +93,25 @@ fs.writeFileSync('deploy/nginx-redirects.conf',
 // Apache / LiteSpeed (Hostinger runs LiteSpeed, which reads .htaccess).
 // The template lives in src/htaccess.tpl so its regexes are not mangled by
 // JavaScript string escaping.
-// Apache leaves %{REQUEST_URI} percent-encoded; LiteSpeed (Hostinger) hands it
-// over already decoded. Match both spellings so the rule fires on either.
+/* Two hard-won details here:
+
+   1. Apache leaves %{REQUEST_URI} percent-encoded; LiteSpeed (Hostinger) hands
+      it over already decoded. Both spellings are tested so the rule fires
+      either way. Patterns are regexes, so "%" is literal in them - safe.
+
+   2. The target must NOT be percent-encoded. In a RewriteRule substitution
+      "%1".."%9" are RewriteCond backreferences, so "%D7%90" was read as
+      "%D7" + backreference 9 (empty) + "0" and the redirect pointed at a
+      mangled URL. Writing the target as literal UTF-8 and dropping the NE
+      flag lets the server do the escaping correctly. */
 const redirectRules = CFG.redirects.map(r => {
   const encoded = enc(r.from).replace(/\/$/, '');
   const decoded = r.from.replace(/\/$/, '');
-  const to = enc(r.to);
   return [
     '  # ' + r.from,
     '  RewriteCond %{REQUEST_URI} ^' + encoded + '/?$ [NC,OR]',
     '  RewriteCond %{REQUEST_URI} ^' + decoded + '/?$ [NC]',
-    '  RewriteRule ^ ' + to + ' [R=301,L,NE]',
+    '  RewriteRule ^ ' + r.to + ' [R=301,L]',
   ].join('\n');
 }).join('\n\n');
 

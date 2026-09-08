@@ -61,10 +61,16 @@ const enc = (p) => '/' + p.split('/').filter(Boolean).map(encodeURIComponent).jo
   for (const r of REDIRECTS) {
     const res = await req(BASE + enc(r.from), { method: 'HEAD' });
     const loc = res.headers.location || '';
-    const good = res.status === 301 && decodeURIComponent(loc).endsWith(r.to);
+    // Node reads headers as latin1; re-read as UTF-8 so a raw-UTF-8 Location
+    // is understood, and keep going if the value is not decodable at all.
+    let readable = Buffer.from(loc, 'latin1').toString('utf8');
+    let decoded = readable;
+    try { decoded = decodeURIComponent(readable); }
+    catch (e) { decoded = readable + '   <-- MALFORMED (not valid percent-encoding)'; }
+    const good = res.status === 301 && decoded.endsWith(r.to);
     console.log('  ' + (good ? 'OK  ' : 'FAIL') + ' ' + res.status + '  ' + r.from.slice(0, 42));
-    console.log('        -> ' + (decodeURIComponent(loc) || '(no Location)').slice(0, 70));
-    if (!good) note('301 not working', r.from);
+    console.log('        -> ' + (decoded || '(no Location)').slice(0, 90));
+    if (!good) note('301 target wrong', r.from + ' -> ' + decoded.slice(0, 60));
   }
 
   /* ---- 3. assets ---- */
