@@ -93,13 +93,19 @@ fs.writeFileSync('deploy/nginx-redirects.conf',
 // Apache / LiteSpeed (Hostinger runs LiteSpeed, which reads .htaccess).
 // The template lives in src/htaccess.tpl so its regexes are not mangled by
 // JavaScript string escaping.
+// Apache leaves %{REQUEST_URI} percent-encoded; LiteSpeed (Hostinger) hands it
+// over already decoded. Match both spellings so the rule fires on either.
 const redirectRules = CFG.redirects.map(r => {
-  const from = enc(r.from);          // percent-encoded, with trailing slash
+  const encoded = enc(r.from).replace(/\/$/, '');
+  const decoded = r.from.replace(/\/$/, '');
   const to = enc(r.to);
-  const fromNoSlash = from.replace(/\/$/, '');
-  return '  RewriteCond %{REQUEST_URI} ^' + fromNoSlash + '/?$ [NC]\n' +
-    '  RewriteRule ^ ' + to + ' [R=301,L,NE]';
-}).join('\n');
+  return [
+    '  # ' + r.from,
+    '  RewriteCond %{REQUEST_URI} ^' + encoded + '/?$ [NC,OR]',
+    '  RewriteCond %{REQUEST_URI} ^' + decoded + '/?$ [NC]',
+    '  RewriteRule ^ ' + to + ' [R=301,L,NE]',
+  ].join('\n');
+}).join('\n\n');
 
 fs.writeFileSync(path.join(OUT, '.htaccess'),
   fs.readFileSync('src/htaccess.tpl', 'utf8').replace('__REDIRECTS__', redirectRules),
