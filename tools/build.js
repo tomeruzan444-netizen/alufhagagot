@@ -10,6 +10,16 @@ const FIX = require('./content-fixes.js');
 const SEO = require('./seo-overrides.js');
 const LINKS = require('./internal-links.js');
 const HOME = require('./home-layout.js');
+const crypto = require('crypto');
+
+/* Assets are served with `immutable` for a year, which means a browser will
+   not re-fetch them even on a manual reload. Version each URL by the hash of
+   its contents so a change produces a new URL - unchanged files keep the
+   long cache, changed ones are picked up immediately. */
+const assetHash = (file) => crypto.createHash('sha1')
+  .update(fs.readFileSync(file)).digest('hex').slice(0, 8);
+const CSS_V = assetHash('src/css/site.css');
+const JS_V = assetHash('src/js/site.js');
 
 const pages = JSON.parse(fs.readFileSync('_source/pages.json', 'utf8'));
 const OUT = 'build';
@@ -729,7 +739,7 @@ ${page.ogImage ? `<meta property="og:image" content="${esc(page.ogImage)}">` : '
 <meta name="theme-color" content="#ff8f00">
 <link rel="preload" href="/assets/fonts/2sDcZGJYnIjSi6H75xkzamW5O7w.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts/assistant.css">
-<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/assets/css/site.css?v=${CSS_V}">
 ${schemaTags}
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${CFG.gtmId}');</script>
 </head>
@@ -819,7 +829,7 @@ ${isHome ? renderHome() : `    ${heroSection}
   <a class="a11y-statement" href="/הצהרת-נגישות/">להצהרת הנגישות המלאה</a>
 </div>
 
-<script src="/assets/js/site.js" defer></script>
+<script src="/assets/js/site.js?v=${JS_V}" defer></script>
 </body>
 </html>`;
 }

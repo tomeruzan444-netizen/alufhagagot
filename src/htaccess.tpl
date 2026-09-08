@@ -65,7 +65,7 @@ ErrorDocument 404 /404.html
   ExpiresByType image/webp "access plus 1 year"
   ExpiresByType video/mp4 "access plus 1 year"
   ExpiresByType font/woff2 "access plus 1 year"
-  ExpiresByType text/html "access plus 1 hour"
+  ExpiresByType text/html "access plus 0 seconds"
 </IfModule>
 
 # Staging / preview hosts must never enter the index - otherwise the temporary
@@ -83,8 +83,15 @@ ErrorDocument 404 /404.html
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   Header set X-Frame-Options "SAMEORIGIN"
   Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  # Assets carry a ?v=<content hash>, so a year-long immutable cache is safe:
+  # a change produces a new URL rather than a stale file.
   <FilesMatch "\.(css|js|png|jpe?g|webp|woff2|mp4)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # HTML must revalidate every time, or a visitor keeps pointing at the old
+  # asset URLs and never sees a redesign.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
   </FilesMatch>
 </IfModule>
 
