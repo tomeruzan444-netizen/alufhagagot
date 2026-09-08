@@ -94,4 +94,26 @@ function fixText(text, page) {
   return collapseAdjacentRepeat(text, page);
 }
 
-module.exports = { fixHtml, fixText, log };
+/* ---------------------------------------------------------------------------
+   Blocks removed from every page at the client's request.
+
+   The source repeated a "התקשרו עכשיו והתייעצו איתנו" heading with a bare
+   tel: button directly under the lead form. The rebuilt hero already shows
+   both numbers by name, so the pair is redundant.
+
+   Shared by build.js (which drops them) and verify.js (which must not report
+   them as lost content), so the two can never disagree.
+--------------------------------------------------------------------------- */
+function droppedHeroBlocks(hero) {
+  const dropped = new Set();
+  hero.forEach((b, i) => {
+    if (b.type === 'heading' && /^התקשרו עכשיו/.test(b.text || '')) {
+      dropped.add(b);
+      const next = hero[i + 1];
+      if (next && next.type === 'button' && /^tel:/i.test(next.href || '')) dropped.add(next);
+    }
+  });
+  return dropped;
+}
+
+module.exports = { fixHtml, fixText, log, droppedHeroBlocks };

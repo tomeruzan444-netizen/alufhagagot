@@ -298,6 +298,23 @@ function renderRawHtml(block) {
   // These widgets carried whole-document stylesheets (`body { font-family: Arial }`
   // and friends) that leaked out and restyled the page. Scope them to this embed
   // and strip their font declarations so Assistant is inherited everywhere.
+  // The "daily tip" widget filled #tipContent from JavaScript, so Googlebot saw
+  // an empty element. Pre-render the first tip and today's date into the HTML;
+  // the script still swaps in the date-based tip for visitors.
+  const $tip = $('#__h #tipContent');
+  if ($tip.length && !$tip.text().trim()) {
+    const src = $('#__h script').map((i, el) => $(el).html() || '').get().join('\n');
+    const m = src.match(/const\s+tips\s*=\s*\[([\s\S]*?)\]/);
+    if (m) {
+      const first = (m[1].match(/"([^"]{10,})"/) || m[1].match(/'([^']{10,})'/) || [])[1];
+      if (first) $tip.text(first);
+    }
+    const $date = $('#__h #tipDate');
+    if ($date.length && !$date.text().trim()) {
+      $date.text(new Date().toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
+    }
+  }
+
   const scope = 'embed-' + (++embedSeq);
   $('#__h style').each((i, el) => {
     const raw = $(el).html() || '';
@@ -414,6 +431,10 @@ function renderPage(page) {
   if (heroForm) usedInHero.add(heroForm);
   if (formHeading) usedInHero.add(formHeading);
 
+  // The hero already carries both numbers by name, so the source's redundant
+  // "call us now" heading + tel button pair is dropped (see content-fixes.js).
+  FIX.droppedHeroBlocks(hero).forEach(b => usedInHero.add(b));
+
   // the lede is the first richtext right after the H1
   const h1Pos = hero.indexOf(h1Block);
   const ledeBlock = h1Pos >= 0 ? hero.slice(h1Pos + 1).find(b => b.type === 'richtext') : null;
@@ -439,10 +460,10 @@ function renderPage(page) {
           <div>
             ${h1Html}
             ${ledeBlock ? `<div class="hero-lede">${enhanceHtml(ledeBlock.html)}</div>` : ''}
-            <p>
-              <a class="btn btn--primary btn--lg" href="tel:${esc(CFG.phones[0].tel)}">${ICON.phone}חייגו ${esc(CFG.phones[0].label)}</a>
-              <a class="btn btn--ghost btn--lg" href="https://wa.me/${esc(CFG.whatsapp)}" rel="noopener" target="_blank">${ICON.whatsapp}ווטסאפ</a>
-            </p>
+            <div class="hero-cta">
+              ${CFG.phones.map((ph, i) => `<a class="btn btn--lg ${i === 0 ? 'btn--primary' : 'btn--ghost'}" href="tel:${escRaw(ph.tel)}">${ICON.phone}<span>${esc(ph.name)} <b>${esc(ph.label)}</b></span></a>`).join('\n              ')}
+              <a class="btn btn--ghost btn--lg" href="https://wa.me/${escRaw(CFG.whatsapp)}" rel="noopener" target="_blank">${ICON.whatsapp}ווטסאפ</a>
+            </div>
             <ul class="trust-row">
               <li>${ICON.check}מעל 20 שנות ניסיון</li>
               <li>${ICON.check}אחריות בכתב</li>
@@ -590,8 +611,7 @@ ${schemaTags}
 <header class="site-header">
   <div class="wrap header-bar">
     <a class="brand" href="/" aria-label="${esc(CFG.siteName)} - לדף הבית">
-      ${picture(CFG.logo, CFG.siteName + ' - לוגו', { width: 300, height: 210, eager: true })}
-      <span class="brand-name">${esc(CFG.siteName)}<small>${esc(CFG.tagline)}</small></span>
+      ${picture(CFG.logo, CFG.siteName + ' - ' + CFG.tagline, { width: 300, height: 210, eager: true })}
     </a>
     <nav class="nav" id="primary-nav" aria-label="תפריט ראשי">
       <ul>

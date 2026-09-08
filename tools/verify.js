@@ -10,6 +10,7 @@ const live = pages.filter(p => !REDIRECT_FROM.has(p.pathname));
 // Deliberate SEO corrections (duplicate/missing titles and descriptions).
 // Everything not listed there must still match the original exactly.
 const SEO = require('./seo-overrides.js');
+const FIX = require('./content-fixes.js');
 
 const normDash = (v) => v == null ? v : String(v).replace(/[‐‑‒–—―−]/g, '-');
 
@@ -77,7 +78,10 @@ for (const page of live) {
 
   /* --- content parity (token level) --- */
   const srcTokens = [];
+  // blocks the build deliberately drops must not count as lost content
+  const dropped = FIX.droppedHeroBlocks(page.blocks.filter(b => b.region === 'hero'));
   for (const b of page.blocks) {
+    if (dropped.has(b)) continue;
     switch (b.type) {
       case 'heading': srcTokens.push(...tokens(normDash(b.text))); break;
       case 'button': srcTokens.push(...tokens(normDash(b.text))); break;

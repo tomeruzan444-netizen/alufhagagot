@@ -14,8 +14,8 @@ module.exports = {
   formAccessKey: 'YOUR_ACCESS_KEY',
 
   phones: [
-    { label: '050-565-0223', tel: '0505650223' },
-    { label: '053-225-0954', tel: '0532250954' },
+    { label: '050-565-0223', tel: '0505650223', name: 'מנחם' },
+    { label: '053-225-0954', tel: '0532250954', name: 'שמואל' },
   ],
   whatsapp: '972505650223',
   email: 'Menahemtoledo4@gmail.com',
