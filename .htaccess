@@ -32,11 +32,30 @@ AddType text/html .html
   RewriteCond %{REQUEST_URI} ^/חומרי-איטום-שונים-אז-אילו-חומרים-קיימי/?$ [NC]
   RewriteRule ^ /חומרי-איטום/ [R=301,L]
 
-  # ---- 4. WordPress leftovers ----------------------------------------------
+  # ---- 4. WordPress URLs that answered 200 but have no static equivalent ----
+  # Verified against the live WordPress site before the cutover, so none of
+  # these turns into a 404 the day the domain moves.
+
+  # Rank Math sitemaps Google already knows about -> the one we publish
+  RewriteRule ^sitemap_index\.xml$ /sitemap.xml [R=301,L]
+  RewriteRule ^(post|page|category|author|product)-sitemap\.xml$ /sitemap.xml [R=301,L]
+  RewriteRule ^main-sitemap\.xsl$ /sitemap.xml [R=301,L]
+  RewriteRule ^wp-sitemap.*\.xml$ /sitemap.xml [R=301,L]
+
+  # blog pagination - WordPress served these with a canonical to the parent,
+  # so sending them there keeps the same signal
+  RewriteRule ^page/[0-9]+/?$ / [R=301,L]
+  RewriteRule ^(.+)/page/[0-9]+/?$ /$1/ [R=301,L]
+
+  # per-page RSS feeds
+  RewriteRule ^(feed|comments/feed)/?$ / [R=301,L]
+  RewriteRule ^(.+)/feed/?$ /$1/ [R=301,L]
+
+  # admin, login and the XML-RPC endpoint
   RewriteRule ^wp-admin/?$ / [R=301,L]
   RewriteRule ^wp-login\.php$ / [R=301,L]
   RewriteRule ^xmlrpc\.php$ - [G,L]
-  RewriteRule ^(feed|comments/feed)/?$ / [R=301,L]
+  RewriteRule ^wp-json(/.*)?$ - [G,L]
 </IfModule>
 
 ErrorDocument 404 /404.html
