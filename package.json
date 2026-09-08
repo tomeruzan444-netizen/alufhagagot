@@ -18,6 +18,7 @@
     "serve": "node tools/serve.js",
     "check": "npm run build && npm run verify && npm run audit",
     "crawl": "node tools/images.js && node tools/download-assets.js && node tools/webp.js",
-    "parse": "node tools/parse.js"
+    "parse": "node tools/parse.js",
+    "publish": "bash tools/publish.sh"
   }
 }
