@@ -1,0 +1,20 @@
+# dependencies
+node_modules/
+
+# screenshots are build artefacts - regenerate with `node tools/shots.js`
+_shots/
+
+# scratch output from the audit tooling (regenerated on every run)
+_source/coverage.json
+_source/verify.json
+_source/manifest.json
+_source/assets-result.json
+_source/assistant.css
+
+# OS / editor noise
+Thumbs.db
+.DS_Store
+*.log
+!_source/crawl.log
+.vscode/
+.idea/
