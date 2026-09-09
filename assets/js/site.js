@@ -78,9 +78,11 @@
     form.addEventListener('submit', function (e) {
       var status = form.querySelector('.form-status');
       var endpoint = form.getAttribute('action') || '';
-      // Honeypot: silently drop bot submissions.
+      // Honeypot: silently drop bot submissions. It is a checkbox, and a
+      // checkbox reports value "on" even when unchecked - test .checked, or
+      // every genuine submission looks like a bot and is dropped.
       var hp = form.querySelector('input[name="botcheck"]');
-      if (hp && hp.value) { e.preventDefault(); return; }
+      if (hp && hp.checked) { e.preventDefault(); return; }
       // Submit via fetch so the visitor stays on the page.
       e.preventDefault();
       var btn = form.querySelector('[type="submit"]');
@@ -96,12 +98,23 @@
           if (data && (data.success || data.ok)) {
             form.reset();
             if (stamp) stamp.value = String(Math.floor(Date.now() / 1000));
-            if (status) {
-              status.textContent = (data && data.message) || 'תודה! קיבלנו את הפנייה ונחזור אליכם בהקדם.';
+            // Swap the form for the confirmation panel and bring it into view,
+            // so the visitor cannot miss that the message went through.
+            var sent = form.parentNode && form.parentNode.querySelector('.form-sent');
+            if (sent) {
+              form.hidden = true;
+              sent.hidden = false;
+              var top = sent.getBoundingClientRect().top;
+              if (top < 0 || top > window.innerHeight - 120) {
+                sent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            } else if (status) {
+              status.textContent = (data && data.message) || 'תודה שפניתם אלינו! מיד ניצור אתכם קשר.';
               status.setAttribute('data-state', 'ok');
             }
-            var to = form.getAttribute('data-redirect');
-            if (to) setTimeout(function () { window.location.href = to; }, 1200);
+            // let analytics see the conversion
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'lead_submit', form_page: location.pathname });
           } else if (status) {
             status.textContent = (data && data.message) || 'משהו השתבש. אפשר להתקשר אלינו: 050-565-0223';
             status.setAttribute('data-state', 'err');
