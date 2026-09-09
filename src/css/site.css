@@ -674,3 +674,22 @@ html.a11y-nomotion * { animation: none !important; transition: none !important; 
 .hp-band__cta { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-top: 1.6rem; }
 .hp-band__cta .btn--ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .5); }
 .hp-band__cta .btn--ghost:hover { background: #fff; color: var(--ink); }
+
+/* ---------- lead form: confirmation panel ---------- */
+.lead-block { display: block; }
+.form-sent { text-align: center; padding: .5rem .25rem 1rem; }
+.form-sent__mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 62px; height: 62px; border-radius: 50%;
+  background: #e8f7ec; color: var(--accent);
+  margin-bottom: .9rem;
+  animation: sentPop .34s cubic-bezier(.2, .9, .3, 1.3) both;
+}
+.form-sent__mark svg { width: 32px; height: 32px; fill: currentColor; }
+@keyframes sentPop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .form-sent__mark { animation: none; } }
+.form-sent h3 { font-size: var(--step-2); margin: 0 0 .3em; color: var(--ink); }
+.form-sent__lead { font-size: 1.06rem; font-weight: 700; color: var(--ink-2); margin: 0 0 1.3rem; }
+.form-sent__alt { font-size: .9rem; color: var(--ink-3); margin: 0 0 .6rem; }
+.form-sent__cta { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin: 0; }
+.form-sent__cta .btn { font-size: .93rem; }

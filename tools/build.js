@@ -230,7 +230,11 @@ function renderForm(block, page, idx) {
   }).join('\n        ');
 
   const action = CFG.formEndpoint;
-  return `<form class="lead-form" data-lead${attr('action', action)} method="POST"${attr('data-whatsapp', CFG.whatsapp)} data-redirect="/עמוד-תודה/">
+  // The form and its success panel are siblings: on submit the form is hidden
+  // and the panel takes its place, so the visitor gets an unmistakable
+  // confirmation instead of one small line of status text.
+  return `<div class="lead-block">
+      <form class="lead-form" data-lead${attr('action', action)} method="POST"${attr('data-whatsapp', CFG.whatsapp)}>
         <input type="hidden" name="subject" value="פנייה חדשה מהאתר - ${esc(page.title.split('|')[0].trim())}">
         <input type="hidden" name="t" value="">
         <input type="hidden" name="from_page" value="${esc(page.pathname)}">
@@ -239,7 +243,17 @@ function renderForm(block, page, idx) {
         <button type="submit" class="btn btn--primary btn--block">${esc(block.submit || 'שלח')}</button>
         <p class="form-status" role="status" aria-live="polite"></p>
         <p class="form-note">פנייתכם מגיעה אלינו ישירות. אנחנו חוזרים בדרך כלל תוך שעה בשעות הפעילות.</p>
-      </form>`;
+      </form>
+      <div class="form-sent" role="status" aria-live="polite" hidden>
+        <span class="form-sent__mark" aria-hidden="true">${ICON.check}</span>
+        <h3>תודה שפניתם אלינו!</h3>
+        <p class="form-sent__lead">מיד ניצור אתכם קשר.</p>
+        <p class="form-sent__alt">ממהרים? אפשר להתקשר עכשיו:</p>
+        <p class="form-sent__cta">
+          ${CFG.phones.map(ph => `<a class="btn btn--ghost" href="tel:${escRaw(ph.tel)}">${ICON.phone}${esc(ph.name)} ${esc(ph.label)}</a>`).join('\n          ')}
+        </p>
+      </div>
+    </div>`;
 }
 
 function renderFaq(block) {
