@@ -11,7 +11,9 @@
 declare(strict_types=1);
 
 // ---------------------------------------------------------------- settings
-const MAIL_TO      = 'Menahemtoledo4@gmail.com';
+// TEMPORARY: leads go to the site owner's own inbox while deliverability is
+// being confirmed. Switch back to Menahemtoledo4@gmail.com once verified.
+const MAIL_TO      = 'tomeruzan444@gmail.com';
 const MAIL_FROM    = 'no-reply@roofschamp.co.il';   // must be on this domain for SPF
 const SITE_NAME    = 'אלוף הגגות';
 const RATE_LIMIT   = 6;        // submissions ...
