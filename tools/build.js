@@ -109,9 +109,15 @@ function hasWebp(src) {
 }
 
 // Keeps the original file path (Google Images equity) and adds a WebP source.
+const MISSING_IMAGES = new Set(SEO.missingImages || []);
 function picture(src, alt, opts) {
   opts = opts || {};
   if (!src) return '';
+  const fileName = decodeURIComponent(String(src).split('/').pop().split('?')[0]);
+  // deleted from the media library; a broken <img> helps nobody
+  if (MISSING_IMAGES.has(fileName)) return '';
+  // the editor left some images without alt text
+  if (!alt || !String(alt).trim()) alt = (SEO.alt || {})[fileName] || '';
   let rel = src;
   try { rel = new URL(src, CFG.origin).pathname; } catch (e) { }
   const dims = attr('width', opts.width) + attr('height', opts.height);
@@ -168,6 +174,17 @@ function enhanceHtml(html) {
     const $i = $(el);
     const src = $i.attr('src');
     if (!src) return;
+    const fileName = decodeURIComponent(String(src).split('/').pop().split('?')[0]);
+    // the file was deleted from the media library; drop the broken reference
+    // (and its wrapper, if the image was all it held)
+    if (MISSING_IMAGES.has(fileName)) {
+      const $fig = $i.closest('figure');
+      if ($fig.length && !$fig.find('figcaption').text().trim()) $fig.remove(); else $i.remove();
+      return;
+    }
+    if (!($i.attr('alt') || '').trim() && (SEO.alt || {})[fileName]) {
+      $i.attr('alt', SEO.alt[fileName]);
+    }
     let rel = src;
     try { rel = new URL(src, CFG.origin).pathname; } catch (e) { }
     $i.attr('src', rel);

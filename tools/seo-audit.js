@@ -58,6 +58,8 @@ Object.entries(byText).filter(([, v]) => v.length > 1).forEach(([, v]) =>
 
 /* ---------- 2. title / description length ---------- */
 for (const [pn, d] of docs) {
+  // A noindex page never appears in a result, so its snippet length is moot.
+  if (NOINDEX.has(pn)) continue;
   const t = d.$('title').text().trim();
   const desc = (d.$('meta[name="description"]').attr('content') || '').trim();
   if (t.length > 65) add('medium', 'כותרת ארוכה מדי', pn, `${t.length} תווים (מומלץ עד 60) - תיחתך בגוגל`);
