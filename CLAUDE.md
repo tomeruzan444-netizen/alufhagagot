@@ -58,6 +58,12 @@ exist; then `status: published` and `npm run publish`. The build refuses a
 published page that fails any check in `npm run page`. `tools/site-pages.js`
 is the one page list every tool reads (crawl + additions + new pages).
 
+**Every time you create or update a new page, put a clickable link to it in
+your reply** (owner's request): the live URL once published; for a draft, run
+`node tools/preview.js` in the background and link
+`http://127.0.0.1:8181/<path>/` - say it is a local preview that works only on
+this machine while the server runs, and give the future live URL too.
+
 ## Site rules
 
 - **Never change an existing URL.** They are percent-encoded Hebrew slugs that
