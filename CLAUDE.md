@@ -25,6 +25,13 @@ The non-negotiables from it:
 - At least 3 of the "רק מנחם היה כותב את זה" elements per article.
 - None of the banned stock phrases ("בוודאי!", "חומרים איכותיים",
   "שאף טיפה לא תחדור", ...).
+- **Before creating any page - including one the user explicitly asks for -
+  check it does not already exist:** `npm run find -- "topic"` (or a proposed
+  `/slug/`), in a few phrasings. It matches Hebrew variants a plain search
+  misses (גג/גגות, בטון/מבטון, קרית/קריית). If a page on the topic exists, do
+  not create a second one: report it and propose expanding the existing page
+  (additively, with approval). If the topic is only a section of a page, stop
+  and ask.
 - No new city page without something true and local to say. Never a `-2` URL.
 - **Every new page gets inbound links from the 1-3 most relevant existing
   pages**, in the body copy, with context. Prefer linking words that already
@@ -47,6 +54,7 @@ guide's version history.
 ## Workflow
 
 ```
+npm run find -- "topic"   # does the site already have a page on this?
 npm run check     # build + verify against the original + SEO audit
 npm run publish -- "commit message"   # verify, commit, push main + deploy
 ```

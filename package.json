@@ -9,6 +9,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "find": "node tools/find-existing.js",
     "build": "node tools/build.js && node tools/seo-files.js",
     "verify": "node tools/verify.js",
     "audit": "node tools/seo-audit.js",
