@@ -10,6 +10,7 @@ const FIX = require('./content-fixes.js');
 const SEO = require('./seo-overrides.js');
 const LINKS = require('./internal-links.js');
 const HOME = require('./home-layout.js');
+const INBOUND = require('./inbound-links.js');
 const crypto = require('crypto');
 
 /* Assets are served with `immutable` for a year, which means a browser will
@@ -221,6 +222,16 @@ function enhanceHtml(html) {
     });
   }
 
+  // Links into new pages (tools/inbound-links.js). Article body only - the
+  // sidebar renders first and is shared by every page, so it must never take
+  // the link.
+  if (CURRENT_REGION === 'article') {
+    INBOUND.applyTo($, '#__r', CURRENT_PAGE, (to) => {
+      const target = LIVE_PAGES.find(x => x.pathname === to);
+      return target ? target.rawPathname : to;
+    });
+  }
+
   return dashesInHtml(FIX.fixHtml($('#__r').html(), CURRENT_PAGE));
 }
 
@@ -359,10 +370,8 @@ function renderRawHtml(block) {
       const first = (m[1].match(/"([^"]{10,})"/) || m[1].match(/'([^']{10,})'/) || [])[1];
       if (first) $tip.text(first);
     }
-    const $date = $('#__h #tipDate');
-    if ($date.length && !$date.text().trim()) {
-      $date.text(new Date().toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
-    }
+    // #tipDate is left for the script: a date baked in at build time goes stale
+    // the next day and would rewrite every page on each rebuild.
   }
 
   const scope = 'embed-' + (++embedSeq);
@@ -377,8 +386,10 @@ function renderRawHtml(block) {
 
 /* ------------------------------------------------------------ page render */
 let CURRENT_PAGE = '';
+let CURRENT_REGION = '';
 function renderPage(page) {
   CURRENT_PAGE = page.pathname;
+  CURRENT_REGION = '';
   const anchors = new Set();
   const headingIds = [];      // for the table of contents
   const isHome = page.pathname === '/';
@@ -394,6 +405,7 @@ function renderPage(page) {
   let firstImage = true;
 
   function renderBlock(b, i) {
+    CURRENT_REGION = b.region || '';
     switch (b.type) {
       case 'heading': {
         // A handful of source pages carry a second <h1> inside the article body.
@@ -659,7 +671,7 @@ function renderPage(page) {
     const band = P.bandHeading ? `<section class="hp-band">
       <div class="wrap-narrow">
         <h2>${esc(FIX.fixText(P.bandHeading.text, CURRENT_PAGE))}</h2>
-        ${P.bandText ? enhanceHtml(P.bandText.html) : ''}
+        ${P.bandText ? ((CURRENT_REGION = P.bandText.region || ''), enhanceHtml(P.bandText.html)) : ''}
         <p class="hp-band__cta">
           <a class="btn btn--primary btn--lg" href="tel:${escRaw(CFG.phones[0].tel)}">${ICON.phone}${esc(CFG.phones[0].name)} ${esc(CFG.phones[0].label)}</a>
           <a class="btn btn--ghost btn--lg" href="#lead">${esc(P.formHeading ? P.formHeading.text : 'השאירו פרטים')}</a>
@@ -897,6 +909,10 @@ Object.entries(byKind).forEach(([k, v]) => {
   });
 });
 fs.writeFileSync('_source/content-fixes.json', JSON.stringify(FIX.log, null, 2));
+
+// every link into a new page must have landed; otherwise stop the build
+const inboundCount = INBOUND.assertAllApplied(new Set(LIVE_PAGES.map(p => p.pathname)));
 console.log('');
+console.log('inbound links to new pages:', inboundCount);
 console.log('pages written:', written);
 console.log('redirected instead of written:', skipped.length, skipped);
