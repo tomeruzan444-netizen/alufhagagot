@@ -1,7 +1,7 @@
 // sitemap.xml, robots.txt, 404 page and host redirect configs.
 const fs = require('fs'), path = require('path');
 const CFG = require('./site.config.js');
-const pages = JSON.parse(fs.readFileSync('_source/pages.json', 'utf8'));
+const pages = require('./site-pages.js').load();   // crawled + additions + published new pages
 const OUT = 'build';
 const REDIRECT_FROM = new Set(CFG.redirects.map(r => r.from));
 

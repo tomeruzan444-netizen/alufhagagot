@@ -6,7 +6,7 @@ const CFG = require('./site.config.js');
 const BASE = (process.argv[2] || '').replace(/\/$/, '');
 if (!BASE) { console.error('usage: node tools/live-check.js https://host'); process.exit(1); }
 
-const pages = JSON.parse(fs.readFileSync('_source/pages.json', 'utf8'));
+const pages = require('./site-pages.js').load();   // crawled + additions + published new pages
 const REDIRECTS = CFG.redirects;
 const SEO = require('./seo-overrides.js');
 const NOINDEX = new Set(Object.keys(SEO.robots || {}));

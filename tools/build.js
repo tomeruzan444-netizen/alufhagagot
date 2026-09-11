@@ -11,7 +11,8 @@ const SEO = require('./seo-overrides.js');
 const LINKS = require('./internal-links.js');
 const HOME = require('./home-layout.js');
 const INBOUND = require('./inbound-links.js');
-const ADDITIONS = require('./content-additions.js');
+const SITE = require('./site-pages.js');
+const NEW = require('./new-pages.js');
 const crypto = require('crypto');
 
 /* Assets are served with `immutable` for a year, which means a browser will
@@ -23,9 +24,15 @@ const assetHash = (file) => crypto.createHash('sha1')
 const CSS_V = assetHash('src/css/site.css');
 const JS_V = assetHash('src/js/site.js');
 
-// approved additions to existing pages are merged in here (content-additions.js)
-const pages = ADDITIONS.apply(JSON.parse(fs.readFileSync('_source/pages.json', 'utf8')));
-const OUT = 'build';
+// The crawled pages, the approved additions to them and the published new
+// pages (site-pages.js). BUILD_DRAFTS=1 BUILD_OUT=_preview renders the drafts
+// too, into a folder that is never deployed.
+const OUT = process.env.BUILD_OUT || 'build';
+const DRAFTS = !!process.env.BUILD_DRAFTS;
+if (DRAFTS && path.resolve(OUT) === path.resolve('build')) throw new Error('drafts are never built into build/ - set BUILD_OUT');
+const pages = SITE.load({ drafts: DRAFTS });
+// a published new page that breaks a rule of the content guide stops the build
+NEW.assertPublishable(pages, SITE.crawled());
 const REDIRECT_FROM = new Set(CFG.redirects.map(r => r.from));
 const LIVE_PAGES = pages.filter(p => !REDIRECT_FROM.has(p.pathname));
 const LINK_MESH = LINKS.build(LIVE_PAGES);
@@ -388,6 +395,15 @@ function renderRawHtml(block) {
     // the next day and would rewrite every page on each rebuild.
   }
 
+  // documented case studies live in these widgets, so links into new pages
+  // may land here too - article body only, as in enhanceHtml
+  if (CURRENT_REGION === 'article') {
+    INBOUND.applyTo($, '#__h', CURRENT_PAGE, (to) => {
+      const target = LIVE_PAGES.find(x => x.pathname === to);
+      return target ? target.rawPathname : to;
+    });
+  }
+
   const scope = 'embed-' + (++embedSeq);
   $('#__h style').each((i, el) => {
     const raw = $(el).html() || '';
@@ -396,6 +412,18 @@ function renderRawHtml(block) {
   });
 
   return '<div class="embed ' + scope + '">' + dashesInHtml(FIX.fixHtml($('#__h').html(), CURRENT_PAGE)) + '</div>';
+}
+
+// "מאת מנחם טולדו" under the lede of pages written for the new site. Crawled
+// pages had no author line and do not get one.
+const HE_MONTHS = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
+function byline(page) {
+  if (!page._new) return '';
+  const { author, published } = page._new.meta;
+  const about = LIVE_PAGES.find(x => x.pathname === '/עמוד-אודות/');
+  const d = published ? new Date(published) : null;
+  const when = d && !isNaN(d) ? ` · <time datetime="${escRaw(published)}">${HE_MONTHS[d.getMonth()]} ${d.getFullYear()}</time>` : '';
+  return `<p class="byline">מאת <a href="${about ? about.rawPathname : '/'}">${esc(author || 'מנחם טולדו')}</a>, מייסד שותף באלוף הגגות${when}</p>`;
 }
 
 /* ------------------------------------------------------------ page render */
@@ -536,6 +564,7 @@ function renderPage(page) {
           <div>
             ${h1Html}
             ${ledeBlock ? `<div class="hero-lede">${enhanceHtml(ledeBlock.html)}</div>` : ''}
+            ${byline(page)}
             <div class="hero-cta">
               ${CFG.phones.map((ph, i) => `<a class="btn btn--lg ${i === 0 ? 'btn--primary' : 'btn--ghost'}" href="tel:${escRaw(ph.tel)}">${ICON.phone}<span>${esc(ph.name)} <b>${esc(ph.label)}</b></span></a>`).join('\n              ')}
               <a class="btn btn--ghost btn--lg" href="https://wa.me/${escRaw(CFG.whatsapp)}" rel="noopener" target="_blank">${ICON.whatsapp}ווטסאפ</a>

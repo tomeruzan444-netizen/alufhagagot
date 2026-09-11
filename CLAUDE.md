@@ -48,6 +48,16 @@ The non-negotiables from it:
 When Menachem confirms a fact, update the fact sheet and add a line to the
 guide's version history.
 
+## New pages
+
+One Markdown file per page in `content/pages/` (front matter documented in
+`tools/new-pages.js`). A page starts as `status: draft` - drafts are never
+built into `build/`. It goes live only after Menachem approves
+(`approved:`), every `[לאשר עם מנחם]` is resolved and 1-3 inbound rules
+exist; then `status: published` and `npm run publish`. The build refuses a
+published page that fails any check in `npm run page`. `tools/site-pages.js`
+is the one page list every tool reads (crawl + additions + new pages).
+
 ## Site rules
 
 - **Never change an existing URL.** They are percent-encoded Hebrew slugs that
@@ -66,6 +76,8 @@ guide's version history.
 ```
 npm run find -- "topic"   # does the site already have a page on this?
 npm run words -- draft.md # article length (new pages: 800-1,100)
+npm run page              # guide checks on every page in content/pages/
+npm run preview           # drafts rendered into _preview/ on :8181, never deployed
 npm run check     # build + verify against the original + SEO audit
 npm run publish -- "commit message"   # verify, commit, push main + deploy
 ```

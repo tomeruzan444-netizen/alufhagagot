@@ -79,8 +79,8 @@ const stripHtml = (html) => {
 };
 
 function fromCrawl() {
-  const pages = require('./content-additions.js')
-    .apply(JSON.parse(fs.readFileSync(path.join(ROOT, '_source/pages.json'), 'utf8')));
+  // drafts too: two drafts on one topic are a duplicate as well
+  const pages = require('./site-pages.js').load({ drafts: true });
   const redirected = new Map(CFG.redirects.map((r) => [r.from, r.to]));
   return pages.map((p) => {
     const heads = [], body = [];

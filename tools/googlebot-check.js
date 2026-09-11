@@ -18,7 +18,7 @@ const UA = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.h
 // us what the real domain will serve.
 const IS_STAGING = /hostingersite\.com|^https?:\/\/\d+\.\d+\.\d+\.\d+/.test(BASE);
 
-const pages = JSON.parse(fs.readFileSync('_source/pages.json', 'utf8'));
+const pages = require('./site-pages.js').load();   // crawled + additions + published new pages
 const skip = new Set(CFG.redirects.map(r => r.from));
 const NOINDEX = new Set(Object.keys(SEO.robots || {}));
 const live = pages.filter(p => !skip.has(p.pathname));

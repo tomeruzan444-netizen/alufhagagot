@@ -67,8 +67,7 @@ function verdict(n) {
 
 function loadPages() {
   const redirected = new Set(CFG.redirects.map((r) => r.from));
-  return require('./content-additions.js')
-    .apply(JSON.parse(fs.readFileSync(path.join(ROOT, '_source/pages.json'), 'utf8')))
+  return require('./site-pages.js').load({ drafts: true })
     .filter((p) => !redirected.has(p.pathname));
 }
 

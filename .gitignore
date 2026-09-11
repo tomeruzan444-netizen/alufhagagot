@@ -18,3 +18,6 @@ Thumbs.db
 !_source/crawl.log
 .vscode/
 .idea/
+
+# drafts rendered for review (BUILD_DRAFTS=1 BUILD_OUT=_preview) - never deployed
+_preview/

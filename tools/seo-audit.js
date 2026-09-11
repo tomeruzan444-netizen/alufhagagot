@@ -2,7 +2,7 @@
 const fs = require('fs'), path = require('path'), cheerio = require('cheerio');
 const CFG = require('./site.config.js');
 
-const pages = JSON.parse(fs.readFileSync('_source/pages.json', 'utf8'));
+const pages = require('./site-pages.js').load();   // crawled + additions + published new pages
 const skip = new Set(CFG.redirects.map(r => r.from));
 const live = pages.filter(p => !skip.has(p.pathname));
 

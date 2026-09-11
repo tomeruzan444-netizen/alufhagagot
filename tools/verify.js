@@ -1,8 +1,8 @@
 /* Compares the generated site against the crawled original, page by page. */
 const fs = require('fs'), path = require('path'), cheerio = require('cheerio');
 const CFG = require('./site.config.js');
-// with the approved additions, so their text must render too
-const pages = require('./content-additions.js').apply(JSON.parse(fs.readFileSync('_source/pages.json', 'utf8')));
+// crawled + approved additions + published new pages: all their text must render
+const pages = require('./site-pages.js').load();
 const OUT = 'build';
 const REDIRECT_FROM = new Set(CFG.redirects.map(r => r.from));
 const live = pages.filter(p => !REDIRECT_FROM.has(p.pathname));
