@@ -79,7 +79,8 @@ const stripHtml = (html) => {
 };
 
 function fromCrawl() {
-  const pages = JSON.parse(fs.readFileSync(path.join(ROOT, '_source/pages.json'), 'utf8'));
+  const pages = require('./content-additions.js')
+    .apply(JSON.parse(fs.readFileSync(path.join(ROOT, '_source/pages.json'), 'utf8')));
   const redirected = new Map(CFG.redirects.map((r) => [r.from, r.to]));
   return pages.map((p) => {
     const heads = [], body = [];

@@ -92,4 +92,15 @@ module.exports = {
     '/עמוד-תודה/': 'noindex, follow',
     '/category/uncategorized/': 'noindex, follow',
   },
+
+  /* --- merged into the Organization node of every page's schema ---
+         The two founders, as the About page names them (see
+         content-additions.js). Only confirmed facts: add Moshe's last name
+         here and on the About page once it is known. */
+  organization: {
+    founder: [
+      { '@type': 'Person', name: 'משה' },
+      { '@type': 'Person', name: 'מנחם טולדו', knowsAbout: ['איטום גגות', 'זיפות גגות', 'איטום בסנפלינג', 'איטום בניינים'] },
+    ],
+  },
 };

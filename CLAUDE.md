@@ -53,8 +53,12 @@ guide's version history.
 - **Never change an existing URL.** They are percent-encoded Hebrew slugs that
   Google has indexed; a changed slug is a 404 and lost ranking.
 - Content, titles and descriptions are preserved from the original site.
-  Deliberate changes live in `tools/seo-overrides.js` and
-  `tools/content-fixes.js` so they are reviewable, never inline edits.
+  Deliberate changes live in `tools/seo-overrides.js`,
+  `tools/content-fixes.js` and `tools/content-additions.js` (approved new
+  paragraphs on existing pages) so they are reviewable, never inline edits.
+- The About page names both founders (content-additions.js) and every page's
+  Organization schema lists them (`organization` in seo-overrides.js). Moshe's
+  last name is still unknown - add it in both places once confirmed.
 - Only the plain hyphen `-` in copy. Long dashes are normalised at build time.
 
 ## Workflow

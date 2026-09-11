@@ -11,6 +11,7 @@ const SEO = require('./seo-overrides.js');
 const LINKS = require('./internal-links.js');
 const HOME = require('./home-layout.js');
 const INBOUND = require('./inbound-links.js');
+const ADDITIONS = require('./content-additions.js');
 const crypto = require('crypto');
 
 /* Assets are served with `immutable` for a year, which means a browser will
@@ -22,7 +23,8 @@ const assetHash = (file) => crypto.createHash('sha1')
 const CSS_V = assetHash('src/css/site.css');
 const JS_V = assetHash('src/js/site.js');
 
-const pages = JSON.parse(fs.readFileSync('_source/pages.json', 'utf8'));
+// approved additions to existing pages are merged in here (content-additions.js)
+const pages = ADDITIONS.apply(JSON.parse(fs.readFileSync('_source/pages.json', 'utf8')));
 const OUT = 'build';
 const REDIRECT_FROM = new Set(CFG.redirects.map(r => r.from));
 const LIVE_PAGES = pages.filter(p => !REDIRECT_FROM.has(p.pathname));
@@ -61,6 +63,18 @@ function dashesInSchema(node) {
     return out;
   }
   return node;
+}
+
+// Adds the founders (seo-overrides.js) to the site's Organization node,
+// wherever a page's schema carries it. Returns a copy; the source is untouched.
+const ORG_ID = CFG.origin + '/#organization';
+function withOrganization(node) {
+  if (Array.isArray(node)) return node.map(withOrganization);
+  if (!node || typeof node !== 'object') return node;
+  if (node['@id'] === ORG_ID && node.name) return { ...node, ...SEO.organization };
+  const out = {};
+  for (const k of Object.keys(node)) out[k] = withOrganization(node[k]);
+  return out;
 }
 
 const esc = (s) => String(s == null ? '' : s)
@@ -732,7 +746,7 @@ function renderPage(page) {
 
   /* ------------------------------------------------------------- <head> */
   const canonical = page.canonical || (CFG.origin + page.rawPathname);
-  const schemaTags = page.schema.map(s =>
+  const schemaTags = page.schema.map(withOrganization).map(s =>
     `<script type="application/ld+json">${JSON.stringify(dashesInSchema(s)).replace(/</g, '\\u003c')}</script>`).join('\n  ');
 
   const breadcrumbs = isHome ? '' : `<nav class="crumbs wrap" aria-label="מסלול ניווט">
