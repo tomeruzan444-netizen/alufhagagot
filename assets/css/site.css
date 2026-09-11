@@ -196,6 +196,9 @@ a:hover { color: var(--brand-cta); }
 .hero h1 { margin-bottom: .35em; }
 .hero-lede { font-size: var(--step-1); color: var(--ink-2); font-weight: 600; margin-bottom: 1.3rem; }
 .hero-lede p:last-child { margin-bottom: 0; }
+/* author line on pages written for the new site */
+.byline { font-size: var(--step--1, .9rem); color: var(--ink-2); margin: -.6rem 0 1.1rem; }
+.byline a { color: inherit; font-weight: 700; }
 
 .hero-cta { display: flex; flex-wrap: wrap; gap: .6rem; margin-block: 1.3rem 0; }
 .hero-cta .btn { flex: 0 1 auto; }
