@@ -10,10 +10,17 @@ Static rebuild of a WordPress site. Live on Hostinger, deployed from the
 
 The non-negotiables from it:
 
-- Written in the first person by **מנחם טולדו**. "אני" for judgement,
-  "אנחנו" for work the crew did. Never "החברה" / "אלוף הגגות מציעה".
-- **No fact about Menachem, the business or a job unless it is marked ✅ in
-  the fact sheet** in the guide. Otherwise write `[לאשר עם מנחם: ...]` and
+- אלוף הגגות has **two founders: משה and מנחם טולדו.** New articles are
+  written in the first person by מנחם, who presents himself as *one of* the
+  founders - never as the only one, never in place of משה.
+- **Existing content is not rewritten.** Never change the author, founder or
+  identity on an existing page - pages in משה's voice stay his. Improvements
+  to existing pages are small additions or point fixes, approved first.
+  Rewrites, merges, deletions or a change of author only on explicit request.
+- "אני" for judgement, "אנחנו" for work the crew did. Never "החברה" /
+  "אלוף הגגות מציעה".
+- **No fact about the founders, the business or a job unless it is marked ✅
+  in the fact sheet** in the guide. Otherwise write `[לאשר עם מנחם: ...]` and
   leave the article as a draft.
 - At least 3 of the "רק מנחם היה כותב את זה" elements per article.
 - None of the banned stock phrases ("בוודאי!", "חומרים איכותיים",
