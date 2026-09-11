@@ -26,6 +26,10 @@ The non-negotiables from it:
 - None of the banned stock phrases ("בוודאי!", "חומרים איכותיים",
   "שאף טיפה לא תחדור", ...).
 - No new city page without something true and local to say. Never a `-2` URL.
+- **Every new page gets inbound links from the 1-3 most relevant existing
+  pages**, in the body copy, with context. Prefer linking words that already
+  exist (no copy change); a new sentence only when approved. Record each one
+  in `tools/inbound-links.js` - the build fails if a rule stops matching.
 - Run the pre-publish checklist at the end of the guide.
 
 When Menachem confirms a fact, update the fact sheet and add a line to the
@@ -47,7 +51,12 @@ npm run check     # build + verify against the original + SEO audit
 npm run publish -- "commit message"   # verify, commit, push main + deploy
 ```
 
-`publish` refuses to push if verification fails. Hostinger auto-deploys the
+`publish` refuses to push if verification fails.
+
+**Never run `npm run publish` to test anything** - it pushes to the live site.
+Test with `npm run check` (or `node tools/build.js`), which never pushes. A
+test that runs the real publish to see whether a guard fires will publish
+whenever the guard does not fire; that is how test content once went live. Hostinger auto-deploys the
 `deploy` branch within about 15 seconds. Hostinger's CDN caches HTML and 301s
 for up to an hour; test with a `?cb=` cache-buster.
 
