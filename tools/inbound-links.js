@@ -17,6 +17,12 @@
 */
 
 const RULES = [
+  // 11.09.2026 - the Herzliya Pituach case is an underground car park
+  {
+    from: '/פרוייקטים-מורכבים/',
+    to: '/איטום-חניון-תת-קרקעי/',
+    phrase: 'חניון תת קרקעי',
+  },
   // {
   //   from: '/איטום-בניין/',             // existing page that gets the link
   //   to: '/איטום-בסנפלינג/',             // the new page
