@@ -32,6 +32,12 @@ The non-negotiables from it:
   not create a second one: report it and propose expanding the existing page
   (additively, with approval). If the topic is only a section of a page, stop
   and ask.
+- **Every new content page is 800-1,100 words** of the article itself (H1,
+  lede, body, FAQ - not menu, sidebar, form or footer), measured with
+  `npm run words -- <draft file or /slug/>`. Never pad to reach it: short of
+  800 means going back to Menachem for more material, or the topic is a
+  section of an existing page. Utility pages (contact, thank-you, legal) are
+  exempt, and existing pages are not rewritten to reach the range.
 - No new city page without something true and local to say. Never a `-2` URL.
 - **Every new page gets inbound links from the 1-3 most relevant existing
   pages**, in the body copy, with context. Prefer linking words that already
@@ -55,6 +61,7 @@ guide's version history.
 
 ```
 npm run find -- "topic"   # does the site already have a page on this?
+npm run words -- draft.md # article length (new pages: 800-1,100)
 npm run check     # build + verify against the original + SEO audit
 npm run publish -- "commit message"   # verify, commit, push main + deploy
 ```
