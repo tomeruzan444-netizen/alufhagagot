@@ -109,11 +109,33 @@ const RULES = [
     to: 'כדי שהמים יתנקזו מהגג מהר: שכבת זפת שנשארים עליה מים עומדים מתבלה מהר יותר מיריעה ביטומנית.',
     why: 'המשפט המקורי לא היה קריא וגם שגוי מקצועית - זפת היא חומר אוטם מים (23 עמודים)',
   },
+  /* The price lists carried two different dates, and one of them was in the
+     future. The owner's instruction (12.09.2026): every price and every piece
+     of information carries the current year. Both variants become the year
+     alone - a month would claim a check that did not happen. */
   {
     find: 'המחירון מעודכן לחודש נובמבר בשנת 2026.',
-    to: 'המחירון מעודכן לחודש נובמבר בשנת 2025.',
-    why: 'תאריך עתידי. 11 עמודים אחרים נושאים את אותו מחירון עם נובמבר 2025 (16 עמודים)',
+    to: 'המחירון מעודכן לשנת 2026.',
+    why: 'תאריך עתידי (16 עמודים); מאוחד לשנה הנוכחית',
   },
+  {
+    find: 'המחירון מעודכן לחודש נובמבר בשנת 2025.',
+    to: 'המחירון מעודכן לשנת 2026.',
+    why: 'עודכן לשנה הנוכחית (11 עמודים)',
+  },
+  {
+    find: 'טבלת מחירים - איטום גגות שינגלס (2025)',
+    to: 'טבלת מחירים - איטום גגות שינגלס (2026)',
+    why: 'עודכן לשנה הנוכחית',
+  },
+  {
+    find: 'טבלת מחירים 2025',
+    to: 'טבלת מחירים 2026',
+    why: 'עודכן לשנה הנוכחית (בתיאור המטא של קרית אתא)',
+  },
+  /* No rule for the blog's "Read More »": the build already replaces that
+     WordPress archive widget with a real post list, so the English text never
+     reaches the page. */
 
   /* ---------------------------------------------------------------------
      4. Spelling and grammar, page by page. Every `find` was matched against
