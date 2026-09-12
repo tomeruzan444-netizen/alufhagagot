@@ -38,6 +38,9 @@ The non-negotiables from it:
   800 means going back to Menachem for more material, or the topic is a
   section of an existing page. Utility pages (contact, thank-you, legal) are
   exempt, and existing pages are not rewritten to reach the range.
+- **At least 10 Q&As at the end** of every new or expanded page, inside the
+  800-1,100 words. Real phone questions, 2-4 sentences each, none repeating
+  what the body already answered.
 - No new city page without something true and local to say. Never a `-2` URL.
 - **Every new page gets inbound links from the 1-3 most relevant existing
   pages**, in the body copy, with context. Prefer linking words that already
