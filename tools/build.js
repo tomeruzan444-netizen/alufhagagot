@@ -13,6 +13,7 @@ const HOME = require('./home-layout.js');
 const INBOUND = require('./inbound-links.js');
 const SITE = require('./site-pages.js');
 const NEW = require('./new-pages.js');
+const TEXTFIX = require('./text-fixes.js');
 const crypto = require('crypto');
 
 /* Assets are served with `immutable` for a year, which means a browser will
@@ -284,7 +285,7 @@ function renderForm(block, page, idx) {
   // confirmation instead of one small line of status text.
   return `<div class="lead-block">
       <form class="lead-form" data-lead${attr('action', action)} method="POST"${attr('data-whatsapp', CFG.whatsapp)}>
-        <input type="hidden" name="subject" value="פנייה חדשה מהאתר - ${esc(page.title.split('|')[0].trim())}">
+        <input type="hidden" name="subject" value="פנייה חדשה מהאתר - ${esc(FIX.fixText((SEO.title[page.pathname] || page.title || '').split('|')[0].trim(), page.pathname))}">
         <input type="hidden" name="t" value="">
         <input type="hidden" name="from_page" value="${esc(page.pathname)}">
         <input type="checkbox" name="botcheck" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -432,6 +433,9 @@ let CURRENT_REGION = '';
 function renderPage(page) {
   CURRENT_PAGE = page.pathname;
   CURRENT_REGION = '';
+  // blocks the content audit deletes never render (tools/text-fixes.js)
+  page = { ...page, blocks: page.blocks.filter(b =>
+    !TEXTFIX.isDropped([b.text, b.html].filter(Boolean).join(' '), page.pathname)) };
   const anchors = new Set();
   const headingIds = [];      // for the table of contents
   const isHome = page.pathname === '/';
@@ -473,7 +477,7 @@ function renderPage(page) {
         return `<figure class="media">${inner}</figure>`;
       }
       case 'imagebox':
-        return `<div class="imagebox">${picture(b.src, b.alt, {})}${b.title ? `<h3>${esc(b.title)}</h3>` : ''}${b.text ? `<p>${esc(b.text)}</p>` : ''}</div>`;
+        return `<div class="imagebox">${picture(b.src, b.alt, {})}${b.title ? `<h3>${esc(FIX.fixText(b.title, CURRENT_PAGE))}</h3>` : ''}${b.text ? `<p>${esc(FIX.fixText(b.text, CURRENT_PAGE))}</p>` : ''}</div>`;
       case 'gallery':
         return `<div class="gallery">${b.images.map(im => picture(im.src, im.alt, {})).join('')}</div>`;
       case 'list':
@@ -549,7 +553,7 @@ function renderPage(page) {
   // Pages with no H1 in the source (the 5 blog posts + 2 others): promote the
   // page title so every page has exactly one H1.
   const h1Html = h1Block
-    ? `<h1>${esc(h1Block.text)}</h1>`
+    ? `<h1>${esc(FIX.fixText(h1Block.text, CURRENT_PAGE))}</h1>`
     : `<h1>${esc((page.title || '').split('|')[0].split(' - ')[0].trim() || CFG.siteName)}</h1>`;
 
   const heroAside = heroForm ? `<aside class="card card-pad card--sticky">
@@ -775,13 +779,36 @@ function renderPage(page) {
 
   /* ------------------------------------------------------------- <head> */
   const canonical = page.canonical || (CFG.origin + page.rawPathname);
-  const schemaTags = page.schema.map(withOrganization).map(s =>
+  /* The schema repeats the page title and description word for word, and
+     Google reads it. So the SEO overrides and the audit's text corrections
+     have to reach it too - otherwise a fixed title stays broken in the JSON. */
+  const fixSchemaText = (node) => {
+    if (typeof node === 'string') {
+      if (/^https?:\/\//i.test(node)) return node;
+      let s = node;
+      if (SEO.title[page.pathname] && s === page.title) s = SEO.title[page.pathname];
+      if (SEO.description[page.pathname] && s === page.description) s = SEO.description[page.pathname];
+      return FIX.fixText(s, page.pathname);
+    }
+    if (Array.isArray(node)) return node.map(fixSchemaText);
+    if (node && typeof node === 'object') {
+      const out = {};
+      for (const k of Object.keys(node)) {
+        out[k] = (k === 'url' || k === '@id' || k === 'contentUrl' || k === 'sameAs' || k === 'logo' || k === 'image')
+          ? node[k] : fixSchemaText(node[k]);
+      }
+      return out;
+    }
+    return node;
+  };
+
+  const schemaTags = page.schema.map(withOrganization).map(fixSchemaText).map(s =>
     `<script type="application/ld+json">${JSON.stringify(dashesInSchema(s)).replace(/</g, '\\u003c')}</script>`).join('\n  ');
 
   const breadcrumbs = isHome ? '' : `<nav class="crumbs wrap" aria-label="מסלול ניווט">
       <ol>
         <li><a href="/">דף הבית</a></li>
-        <li><span aria-current="page">${esc((page.title || '').split('|')[0].split(' - ')[0].trim())}</span></li>
+        <li><span aria-current="page">${esc(FIX.fixText((SEO.title[page.pathname] || page.title || '').split('|')[0].split(' - ')[0].trim(), page.pathname))}</span></li>
       </ol>
     </nav>`;
 
@@ -806,15 +833,15 @@ function renderPage(page) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(SEO.title[page.pathname] || page.title)}</title>
-${(SEO.description[page.pathname] || page.description) ? `<meta name="description" content="${esc(SEO.description[page.pathname] || page.description)}">` : ''}
+<title>${esc(FIX.fixText(SEO.title[page.pathname] || page.title, page.pathname))}</title>
+${(SEO.description[page.pathname] || page.description) ? `<meta name="description" content="${esc(FIX.fixText(SEO.description[page.pathname] || page.description, page.pathname))}">` : ''}
 <link rel="canonical" href="${esc(canonical)}">
 <meta name="robots" content="${esc(SEO.robots[page.pathname] || page.robots || 'index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large')}">
 <meta name="google-site-verification" content="${esc(CFG.googleSiteVerification)}">
 <meta property="og:locale" content="he_IL">
 <meta property="og:type" content="${esc(page.ogType || 'article')}">
-<meta property="og:title" content="${esc(SEO.title[page.pathname] || page.ogTitle || page.title)}">
-${(SEO.description[page.pathname] || page.ogDescription || page.description) ? `<meta property="og:description" content="${esc(SEO.description[page.pathname] || page.ogDescription || page.description)}">` : ''}
+<meta property="og:title" content="${esc(FIX.fixText(SEO.title[page.pathname] || page.ogTitle || page.title, page.pathname))}">
+${(SEO.description[page.pathname] || page.ogDescription || page.description) ? `<meta property="og:description" content="${esc(FIX.fixText(SEO.description[page.pathname] || page.ogDescription || page.description, page.pathname))}">` : ''}
 <meta property="og:url" content="${esc(canonical)}">
 <meta property="og:site_name" content="${esc(CFG.siteName)}">
 ${page.ogImage ? `<meta property="og:image" content="${esc(page.ogImage)}">` : ''}
@@ -952,6 +979,11 @@ Object.entries(byKind).forEach(([k, v]) => {
   });
 });
 fs.writeFileSync('_source/content-fixes.json', JSON.stringify(FIX.log, null, 2));
+
+// every correction from the content audit must still match; otherwise stop
+const textFixes = require('./text-fixes.js').assertAllUsed();
+console.log('');
+console.log('text corrections: ' + textFixes.rules + ' rules, ' + textFixes.applied + ' applications');
 
 // every link into a new page must have landed; otherwise stop the build
 const inboundCount = INBOUND.assertAllApplied(new Set(LIVE_PAGES.map(p => p.pathname)));

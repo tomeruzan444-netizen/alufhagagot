@@ -6,6 +6,7 @@
    All of these fix defects that already existed in the WordPress site. */
 
 const cheerio = require('cheerio');
+const TEXT = require('./text-fixes.js');   // corrections from the content audit
 
 const log = [];
 const record = (kind, page, before, after) => log.push({ kind, page, before, after });
@@ -76,13 +77,14 @@ function dropEmptyHeadings($, root, page) {
 /** Applies every HTML-level repair to a content fragment. */
 function fixHtml(html, page) {
   if (!html) return html;
+  html = TEXT.applyHtml(html, page);   // markup-level corrections first
   const $ = cheerio.load('<div id="__f">' + html + '</div>', { decodeEntities: false });
   dropHeadingEcho($, '#__f', page);
   dropEmptyHeadings($, '#__f', page);
   // text nodes only, so tags and attributes are untouched
   $('#__f').find('*').addBack().contents().each(function walk(i, node) {
     if (node.type === 'text' && node.data && /\S/.test(node.data)) {
-      const fixed = collapseAdjacentRepeat(node.data, page);
+      const fixed = TEXT.apply(collapseAdjacentRepeat(node.data, page), page);
       if (fixed !== node.data) node.data = fixed;
     }
   });
@@ -91,7 +93,7 @@ function fixHtml(html, page) {
 
 /** Applies the text-level repair to a plain string (headings, list items…). */
 function fixText(text, page) {
-  return collapseAdjacentRepeat(text, page);
+  return TEXT.apply(collapseAdjacentRepeat(text, page), page);
 }
 
 /* ---------------------------------------------------------------------------

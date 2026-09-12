@@ -12,13 +12,22 @@ const live = pages.filter(p => !REDIRECT_FROM.has(p.pathname));
 // Everything not listed there must still match the original exactly.
 const SEO = require('./seo-overrides.js');
 const FIX = require('./content-fixes.js');
+// The audit's corrections (text-fixes.js) change words on purpose, so the
+// source is compared after them; parity still catches anything else lost.
+const TEXTFIX = require('./text-fixes.js');
+let VPAGE = '';
+// Corrections are applied to the SOURCE side only. The built page already
+// carries them, and several of them ("ביות" -> "ביותר") are prefixes of their
+// own result, so applying them twice would corrupt the comparison.
+let FIXING = true;
 
 const normDash = (v) => v == null ? v : String(v).replace(/[‐‑‒–—―−]/g, '-');
 
 const fail = [], warn = [];
 const push = (arr, page, kind, msg) => arr.push({ page: page.pathname, kind, msg });
 
-function tokens(t) {
+function tokens(rawText) {
+  const t = FIXING ? TEXTFIX.apply(rawText || '', VPAGE) : (rawText || '');
   return (t || '').replace(/ /g, ' ')
     .replace(/[^\p{L}\p{N}]+/gu, ' ').trim().split(/\s+/).filter(Boolean);
 }
@@ -27,6 +36,7 @@ function tokens(t) {
 // elements (e.g. <h3>..בחיפה</h3><p>איטום..) never fuse into one token.
 function htmlTokens(html) {
   if (!html) return [];
+  if (FIXING) html = TEXTFIX.applyHtml(html, VPAGE);   // same markup-level corrections
   const $f = cheerio.load('<div id="__t">' + html + '</div>', { decodeEntities: false });
   $f('#__t script, #__t style, #__t title').remove();
   const alts = $f('#__t [alt], #__t [title]')
@@ -46,6 +56,7 @@ const allPaths = new Set(pages.map(p => p.pathname));
 const stats = { assetsOk: 0, assetsMissing: new Set(), linksChecked: 0, linksBroken: new Set() };
 
 for (const page of live) {
+  VPAGE = page.pathname;
   const f = outFile(page.pathname);
   if (!fs.existsSync(f)) { push(fail, page, 'missing-page', 'no output file at ' + f); continue; }
 
@@ -54,11 +65,12 @@ for (const page of live) {
 
   /* --- SEO parity --- */
   const title = $('title').text().trim();
-  const expectTitle = SEO.title[page.pathname] || normDash(page.title);
+  const expectTitle = TEXTFIX.apply(SEO.title[page.pathname] || normDash(page.title), page.pathname);
   if (title !== expectTitle) push(fail, page, 'title', `"${title}" != "${page.title}"`);
 
   const desc = $('meta[name="description"]').attr('content') || null;
-  const expectDesc = SEO.description[page.pathname] || normDash(page.description || null);
+  const rawDesc = SEO.description[page.pathname] || normDash(page.description || null);
+  const expectDesc = rawDesc ? TEXTFIX.apply(rawDesc, page.pathname) : rawDesc;
   if (expectDesc !== (desc || null)) push(fail, page, 'description', `"${desc}" != "${page.description}"`);
 
   const canon = $('link[rel="canonical"]').attr('href');
@@ -83,6 +95,8 @@ for (const page of live) {
   const dropped = FIX.droppedHeroBlocks(page.blocks.filter(b => b.region === 'hero'));
   for (const b of page.blocks) {
     if (dropped.has(b)) continue;
+    // blocks the audit deletes are not expected in the output either
+    if (TEXTFIX.isDropped([b.text, b.html].filter(Boolean).join(' '), page.pathname)) continue;
     switch (b.type) {
       case 'heading': srcTokens.push(...tokens(normDash(b.text))); break;
       case 'button': srcTokens.push(...tokens(normDash(b.text))); break;
@@ -101,7 +115,9 @@ for (const page of live) {
 
   const $out = cheerio.load(html);
   $out('script, style, .site-header, .site-footer, .callbar, .a11y-panel').remove();
+  FIXING = false;   // the output is read as-is
   const outSet = new Set(htmlTokens($out('body').html() || ''));
+  FIXING = true;
   const missing = [...new Set(srcTokens)].filter(t => !outSet.has(t));
   if (missing.length) {
     const pct = ((1 - missing.length / new Set(srcTokens).size) * 100).toFixed(1);
