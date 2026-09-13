@@ -20,6 +20,28 @@ module.exports = {
   whatsapp: '972505650223',
   email: 'Menahemtoledo4@gmail.com',
 
+  /* Who the structured data names as the author.
+
+     WordPress left every page declaring its admin user, "roofscha_admin",
+     as the author - with a link to an author archive that does not exist here
+     and a gravatar image. Google reads that as the person behind the content.
+
+     Pages written in משה's own first person stay his (see the content guide:
+     his voice is never replaced). Everything else is מנחם's. */
+  authors: {
+    primary: { slug: 'menachem-toledo', name: 'מנחם טולדו', jobTitle: 'מייסד שותף, אלוף הגגות' },
+    moshe: { slug: 'moshe', name: 'משה', jobTitle: 'מייסד שותף, אלוף הגגות' },
+    moshePages: [
+      '/איטום-גגות-במריחה/',
+      '/איטום-גגות-בתל-אביב/',
+      '/איטום-גגות-שינגלס-מידע-ומחירים/',
+      '/איך-בודקים-כמה-עולה-גג/',
+      '/זיפות-גגות/',
+      '/זפת-קר/',
+      '/חומרי-איטום/',
+    ],
+  },
+
   logo: '/wp-content/uploads/2024/06/אלוף-הגגות-11-300x210.png',
   favicons: {
     ico32: '/wp-content/uploads/2025/08/cropped-פאביקון-אלוף-הגגות-1-32x32.png',

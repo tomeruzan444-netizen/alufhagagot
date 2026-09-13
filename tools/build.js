@@ -802,7 +802,35 @@ function renderPage(page) {
     return node;
   };
 
-  const schemaTags = page.schema.map(withOrganization).map(fixSchemaText).map(s =>
+  /* WordPress named its admin user as the author of every page. Replace that
+     Person with a real one - and with it the author archive link and the
+     gravatar image, neither of which belongs on this site. */
+  const about = LIVE_PAGES.find(x => x.pathname === '/עמוד-אודות/');
+  const aboutUrl = CFG.origin + (about ? about.rawPathname : '/');
+  const who = CFG.authors.moshePages.includes(page.pathname) ? CFG.authors.moshe : CFG.authors.primary;
+  const person = {
+    '@type': 'Person',
+    '@id': aboutUrl + '#' + who.slug,
+    name: who.name,
+    url: aboutUrl,
+    jobTitle: who.jobTitle,
+    worksFor: { '@id': CFG.origin + '/#organization' },
+  };
+  const withAuthor = (node) => {
+    if (Array.isArray(node)) return node.map(withAuthor);
+    if (node && typeof node === 'object') {
+      if (node['@type'] === 'Person' && /roofscha_admin/.test(node['@id'] || '')) return person;
+      const out = {};
+      for (const k of Object.keys(node)) out[k] = withAuthor(node[k]);
+      return out;
+    }
+    if (typeof node === 'string' && node.includes('roofscha_admin')) {
+      return /^https?:/i.test(node) ? person['@id'] : person.name;
+    }
+    return node;
+  };
+
+  const schemaTags = page.schema.map(withOrganization).map(withAuthor).map(fixSchemaText).map(s =>
     `<script type="application/ld+json">${JSON.stringify(dashesInSchema(s)).replace(/</g, '\\u003c')}</script>`).join('\n  ');
 
   const breadcrumbs = isHome ? '' : `<nav class="crumbs wrap" aria-label="מסלול ניווט">
