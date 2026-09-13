@@ -415,16 +415,23 @@ function renderRawHtml(block) {
   return '<div class="embed ' + scope + '">' + dashesInHtml(FIX.fixHtml($('#__h').html(), CURRENT_PAGE)) + '</div>';
 }
 
-// "מאת מנחם טולדו" under the lede of pages written for the new site. Crawled
-// pages had no author line and do not get one.
+/* The people behind the content, above the article on every page.
+
+   Google's quality guidelines ask who wrote the page and who stands behind it;
+   until now the only answer on the site was a WordPress user name. A page
+   written for the new site also names its own author and the month it went up. */
 const HE_MONTHS = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
 function byline(page) {
-  if (!page._new) return '';
-  const { author, published } = page._new.meta;
   const about = LIVE_PAGES.find(x => x.pathname === '/עמוד-אודות/');
-  const d = published ? new Date(published) : null;
-  const when = d && !isNaN(d) ? ` · <time datetime="${escRaw(published)}">${HE_MONTHS[d.getMonth()]} ${d.getFullYear()}</time>` : '';
-  return `<p class="byline">מאת <a href="${about ? about.rawPathname : '/'}">${esc(author || 'מנחם טולדו')}</a>, מייסד שותף באלוף הגגות${when}</p>`;
+  const href = about ? about.rawPathname : '/';
+  let when = '';
+  if (page._new) {
+    const d = page._new.meta.published ? new Date(page._new.meta.published) : null;
+    if (d && !isNaN(d)) {
+      when = ` <time datetime="${escRaw(page._new.meta.published)}">· ${HE_MONTHS[d.getMonth()]} ${d.getFullYear()}</time>`;
+    }
+  }
+  return `<p class="byline">${ICON.check}<span>נכתב ונבדק על ידי <a href="${escRaw(href)}">משה ומנחם טולדו</a>, מייסדי אלוף הגגות ומומחים לאיטום גגות ומבנים${when}</span></p>`;
 }
 
 /* ------------------------------------------------------------ page render */
@@ -761,6 +768,7 @@ function renderPage(page) {
       <div class="wrap hp-hero__inner">
         ${P.lede ? `<p class="hp-eyebrow">${esc(cheerio.load('<d>' + P.lede.html + '</d>')('d').text().trim())}</p>` : ''}
         <h1>${esc(FIX.fixText(P.h1 ? P.h1.text : page.title, CURRENT_PAGE))}</h1>
+        ${byline(page)}
         <div class="hp-hero__cta">
           <a class="btn btn--primary btn--lg" href="#lead">${esc(P.formHeading ? P.formHeading.text : 'השאירו פרטים')}</a>
           ${CFG.phones.map(ph => `<a class="btn btn--outline btn--lg" href="tel:${escRaw(ph.tel)}">${ICON.phone}<span>${esc(ph.name)} <b>${esc(ph.label)}</b></span></a>`).join('\n          ')}
