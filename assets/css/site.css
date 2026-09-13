@@ -196,9 +196,19 @@ a:hover { color: var(--brand-cta); }
 .hero h1 { margin-bottom: .35em; }
 .hero-lede { font-size: var(--step-1); color: var(--ink-2); font-weight: 600; margin-bottom: 1.3rem; }
 .hero-lede p:last-child { margin-bottom: 0; }
-/* author line on pages written for the new site */
-.byline { font-size: var(--step--1, .9rem); color: var(--ink-2); margin: -.6rem 0 1.1rem; }
-.byline a { color: inherit; font-weight: 700; }
+/* who wrote the page and who stands behind it - above the article, every page */
+.byline {
+  display: flex; align-items: flex-start; gap: .45rem;
+  font-size: var(--step--1, .9rem); line-height: 1.5; color: var(--ink-2);
+  margin: -.3rem 0 1.2rem; padding-inline-start: .7rem;
+  border-inline-start: 3px solid var(--brand, #ff8f00);
+}
+.byline svg { width: 1.05em; height: 1.05em; flex: 0 0 auto; margin-top: .22em; color: var(--brand, #ff8f00); }
+.byline a { color: inherit; font-weight: 800; text-underline-offset: 2px; }
+.byline time { white-space: nowrap; }
+/* the home hero sits on a dark photo */
+.hp-hero .byline { color: rgba(255, 255, 255, .84); margin: .2rem 0 1.3rem; }
+.hp-hero .byline a { color: #fff; }
 
 .hero-cta { display: flex; flex-wrap: wrap; gap: .6rem; margin-block: 1.3rem 0; }
 .hero-cta .btn { flex: 0 1 auto; }
