@@ -423,6 +423,20 @@ const RULES = [
     to: 'צרו איתנו קשר ונשמח לתת הצעת מחיר לפי מה שנמצא בפועל',
     why: 'הפנייה לטבלת מחירים שאינה קיימת בעמודים האלה',
   },
+
+  /* ---------------------------------------------------------------------
+     7. Links into new pages that inbound-links.js cannot place.
+  --------------------------------------------------------------------- */
+  /* 15.09.2026 - the new צור יצחק page joins the service-areas grid, right
+     after the neighbouring כפר סבא card, in the same markup. Approved by the
+     owner; added on the day the page went live, because a link to a page that
+     is not yet on the site fails the link check. */
+  {
+    page: '/אזורי-שירות/',
+    findHtml: '<h3 itemprop="name">איטום גגות בכפר סבא</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>',
+    toHtml: '<h3 itemprop="name">איטום גגות בכפר סבא</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>\n\n        <article class="service-area-card" itemscope="" itemtype="https://schema.org/Service">\n            <a href="https://roofschamp.co.il/איטום-גגות-בצור-יצחק/" itemprop="url">\n                <h3 itemprop="name">איטום גגות בצור יצחק</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>',
+    why: 'עמוד צור יצחק נכנס לרשת אזורי השירות, אחרי כפר סבא',
+  },
 ];
 
 /* ------------------------------------------------------------------ engine */

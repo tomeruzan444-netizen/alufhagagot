@@ -23,6 +23,21 @@ const RULES = [
     to: '/איטום-חניון-תת-קרקעי/',
     phrase: 'חניון תת קרקעי',
   },
+  // 15.09.2026 - צור יצחק, approved by the owner. No existing page names the
+  // town, so both links add one sentence. (The service-areas grid gets a card
+  // through text-fixes.js - that page is a single HTML widget.)
+  {
+    from: '/איטום-גגות-במרכז/',
+    to: '/איטום-גגות-בצור-יצחק/',
+    afterText: 'אנו מציעים מגוון שירותי איטום במרכז',
+    sentence: 'גם ביישובי השרון אנחנו עובדים הרבה - למשל ב[איטום גגות בצור יצחק], שבו רוב הבתים הגיעו לגיל שבו האיטום המקורי מתחיל לוותר.',
+  },
+  {
+    from: '/איטום-גגות-בכפר-סבא/',
+    to: '/איטום-גגות-בצור-יצחק/',
+    afterText: 'מחפשים אחר חברת איטום בכפר סבא?',
+    sentence: 'ליישוב הסמוך כתבנו עמוד משלו: [איטום גגות בצור יצחק].',
+  },
   // {
   //   from: '/איטום-בניין/',             // existing page that gets the link
   //   to: '/איטום-בסנפלינג/',             // the new page
