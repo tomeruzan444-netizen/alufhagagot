@@ -437,6 +437,15 @@ const RULES = [
     toHtml: '<h3 itemprop="name">איטום גגות בכפר סבא</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>\n\n        <article class="service-area-card" itemscope="" itemtype="https://schema.org/Service">\n            <a href="https://roofschamp.co.il/איטום-גגות-בצור-יצחק/" itemprop="url">\n                <h3 itemprop="name">איטום גגות בצור יצחק</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>',
     why: 'עמוד צור יצחק נכנס לרשת אזורי השירות, אחרי כפר סבא',
   },
+  /* 18.09.2026 - the new כפר חב"ד page joins the same grid, after the card of
+     לוד, the nearest town that already has one. Same markup, added on the day
+     the page went live. */
+  {
+    page: '/אזורי-שירות/',
+    findHtml: '<h3 itemprop="name">איטום גגות בלוד</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>',
+    toHtml: '<h3 itemprop="name">איטום גגות בלוד</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>\n\n        <article class="service-area-card" itemscope="" itemtype="https://schema.org/Service">\n            <a href="https://roofschamp.co.il/איטום-גגות-בכפר-חבד/" itemprop="url">\n                <h3 itemprop="name">איטום גגות בכפר חב"ד</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>',
+    why: 'עמוד כפר חב"ד נכנס לרשת אזורי השירות, אחרי לוד',
+  },
 ];
 
 /* ------------------------------------------------------------------ engine */

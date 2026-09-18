@@ -38,6 +38,21 @@ const RULES = [
     afterText: 'מחפשים אחר חברת איטום בכפר סבא?',
     sentence: 'ליישוב הסמוך כתבנו עמוד משלו: [איטום גגות בצור יצחק].',
   },
+  // 18.09.2026 - כפר חב"ד, by the owner's instruction. No existing page names
+  // the village, so both links add one sentence. The service-areas grid gets a
+  // card through text-fixes.js, next to the one for צור יצחק.
+  {
+    from: '/איטום-גגות-בבית-דגן/',
+    to: '/איטום-גגות-בכפר-חבד/',
+    afterText: 'אם הגעתם לכאן אתם כנראה צריכים שירותי איטום גגות בבית דגן',
+    sentence: 'ליישוב הסמוך יש עמוד משלו: [איטום גגות בכפר חב"ד], על גגות ותיקים ועל גגות של מבני ציבור.',
+  },
+  {
+    from: '/איטום-גגות-בלוד/',
+    to: '/איטום-גגות-בכפר-חבד/',
+    afterText: 'אנחנו מספקים שירותי איטום גגות בלוד והסביבה',
+    sentence: 'באותו אזור כתבנו גם על [איטום גגות בכפר חב"ד].',
+  },
   // {
   //   from: '/איטום-בניין/',             // existing page that gets the link
   //   to: '/איטום-בסנפלינג/',             // the new page
