@@ -485,6 +485,14 @@ const RULES = [
     toHtml: '<h3 itemprop="name">איטום גגות בלוד</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>\n\n        <article class="service-area-card" itemscope="" itemtype="https://schema.org/Service">\n            <a href="https://roofschamp.co.il/איטום-גגות-בכפר-חבד/" itemprop="url">\n                <h3 itemprop="name">איטום גגות בכפר חב"ד</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>',
     why: 'עמוד כפר חב"ד נכנס לרשת אזורי השירות, אחרי לוד',
   },
+  /* 30.09.2026 - הכרטיס של בת חפר נכנס לאותו גריד, אחרי הכרטיס של נתניה,
+     באותו מבנה. נוסף ביום שהעמוד עלה. */
+  {
+    page: '/אזורי-שירות/',
+    findHtml: '<h3 itemprop="name">איטום גגות בנתניה</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>',
+    toHtml: '<h3 itemprop="name">איטום גגות בנתניה</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>\n\n        <article class="service-area-card" itemscope="" itemtype="https://schema.org/Service">\n            <a href="https://roofschamp.co.il/איטום-גגות-בבת-חפר/" itemprop="url">\n                <h3 itemprop="name">איטום גגות בבת חפר</h3>\n                <p itemprop="description">שירותי איטום מקצועיים</p>\n            </a>\n        </article>',
+    why: 'עמוד בת חפר נכנס לרשת אזורי השירות, אחרי נתניה',
+  },
 ];
 
 /* ------------------------------------------------------------------ engine */
