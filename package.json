@@ -13,7 +13,7 @@
     "words": "node tools/word-count.js",
     "page": "node tools/new-pages.js",
     "preview": "node tools/preview.js",
-    "build": "node tools/build.js && node tools/seo-files.js",
+    "build": "node tools/build.js && node tools/seo-files.js && node tools/reports.js",
     "verify": "node tools/verify.js",
     "audit": "node tools/seo-audit.js",
     "layout": "node tools/audit.js",
