@@ -116,7 +116,9 @@ function fromBuild(known) {
   const out = [];
   (function walk(d, rel) {
     for (const e of fs.readdirSync(d, { withFileTypes: true })) {
-      if (!e.isDirectory() || e.name === 'assets' || e.name === 'wp-content') continue;
+      // דוחות = the private client reports (tools/reports.js): not site content,
+      // so they must never answer a duplicate check.
+      if (!e.isDirectory() || e.name === 'assets' || e.name === 'wp-content' || e.name === 'דוחות') continue;
       const sub = rel + e.name + '/';
       const file = path.join(d, e.name, 'index.html');
       if (fs.existsSync(file) && !known.has(sub)) {
