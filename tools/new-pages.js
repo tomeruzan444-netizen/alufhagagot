@@ -225,7 +225,10 @@ function check(page, crawled) {
   add(!banned.length, 'בלי ביטויים אסורים', banned.join(', '));
   add(!/[‐‑‒–—―−]/.test(body + meta.title + meta.description + meta.h1 + meta.lede), 'רק מקף רגיל (-)');
   const links = [...new Set((body.match(/\]\((\/[^)\s]*)\)/g) || []).map((l) => l.slice(2, -1)))];
-  const broken = links.filter((l) => !crawled.some((p) => p.pathname === decodeURI(l)));
+  // a link may also point at another page written here, as long as it is published
+  const sibling = new Set(files().map((f) => frontMatter(fs.readFileSync(f, 'utf8')).meta)
+    .filter((m) => m.status === 'published').map((m) => m.path));
+  const broken = links.filter((l) => !crawled.some((p) => p.pathname === decodeURI(l)) && !sibling.has(decodeURI(l)));
   add(links.length >= 3 && links.length <= 5, '3-5 קישורים יוצאים', links.length + ' קישורים');
   add(!broken.length, 'כל הקישורים היוצאים קיימים', broken.join(', '));
   const inbound = INBOUND.RULES.filter((r) => r.to === meta.path).length;
