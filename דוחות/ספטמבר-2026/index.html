@@ -265,6 +265,30 @@ td .up { color: var(--good); } td .down { color: var(--bad); }
 @media (max-width: 880px) { .strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 460px) { .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
+/* ------------------------------------------------------------- detail */
+.detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.detail { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow-s); display: grid; gap: 10px; align-content: start; }
+.detail h3 { display: flex; align-items: center; gap: 10px; font-size: .98rem; }
+.detail .dnum { font: 500 .7rem/22px "IBM Plex Mono", monospace; width: 26px; height: 22px; text-align: center; border-radius: 6px; background: var(--series-soft); color: var(--series); }
+.detail ul { margin: 0; padding-inline-start: 18px; display: grid; gap: 6px; }
+.detail li { font-size: .93rem; color: var(--ink-2); }
+@media (max-width: 880px) { .detail-grid { grid-template-columns: 1fr; } }
+
+/* --------------------------------------------------------------- link */
+.link-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; gap: 14px; box-shadow: var(--shadow-s); position: relative; overflow: hidden; }
+.link-card::before { content: ""; position: absolute; inset-block-start: 0; inset-inline: 0; height: 2px; background: linear-gradient(90deg, var(--series), var(--series-2)); }
+.lc-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.lc-domain { font: 600 1.05rem/1 "IBM Plex Mono", monospace; color: var(--ink); }
+.lc-flag { font: 500 .74rem/1 "IBM Plex Mono", monospace; padding: 6px 9px; border-radius: 7px; background: var(--surface-2); color: var(--ink-3); border: 1px solid var(--line); }
+.lc-flag.ok { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.lc-rows { display: grid; gap: 1px; background: var(--line-2); border: 1px solid var(--line-2); border-radius: 10px; overflow: hidden; }
+.lc-rows > div { display: grid; grid-template-columns: 150px 1fr; gap: 14px; background: var(--surface); padding: 10px 14px; }
+.lc-k { font: 500 .72rem/1.6 "IBM Plex Mono", monospace; letter-spacing: .06em; color: var(--ink-3); text-transform: uppercase; }
+.lc-v { font-size: .94rem; color: var(--ink); overflow-wrap: anywhere; }
+.lc-v.mono { font-family: "IBM Plex Mono", monospace; font-size: .88rem; }
+.lc-note { font-size: .93rem; color: var(--ink-2); }
+@media (max-width: 560px) { .lc-rows > div { grid-template-columns: 1fr; gap: 2px; } }
+
 /* --------------------------------------------------------------- next */
 .next ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: step; }
 .next li {
@@ -276,7 +300,7 @@ td .up { color: var(--good); } td .down { color: var(--bad); }
   font: 500 .78rem/30px "IBM Plex Mono", monospace; text-align: center; height: 30px; border-radius: 9px;
   background: linear-gradient(140deg, var(--series), var(--series-2)); color: #fff;
 }
-.next li b { font-weight: 600; }
+.next li b { font-weight: 600; display: block; margin-block-end: 3px; }
 .next li span { color: var(--ink-2); font-size: .94rem; }
 
 footer { border-top: 1px solid var(--line); padding-top: 20px; display: grid; gap: 10px; color: var(--ink-3); font-size: .87rem; }
@@ -320,8 +344,8 @@ footer .sign { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; f
     </div>
     <div class="kpi">
       <div class="k-label">מיקום ממוצע</div>
-      <div class="k-val">21.9</div>
-      <div class="k-foot"><span class="tag up">▲ 3.3 <span class="word">מקומות</span></span><span class="k-prev">אוגוסט 25.2</span></div>
+      <div class="k-val">21.8</div>
+      <div class="k-foot"><span class="tag up">▲ 3.4 <span class="word">מקומות</span></span><span class="k-prev">אוגוסט 25.2</span></div>
     </div>
     <div class="kpi">
       <div class="k-label">אחוז הקלקה</div>
@@ -344,7 +368,7 @@ footer .sign { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; f
     </div>
     <div class="card">
       <span class="badge"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.6"/><path d="M8 5v3.4l2.2 1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> מה הניע את זה</span>
-      <p>המיקום הממוצע השתפר ב-3.3 מקומות, ואחוז ההקלקה מהתוצאות עלה פי 2.3. כלומר האתר לא רק מופיע גבוה יותר, אלא גם גורם ליותר אנשים ללחוץ.</p>
+      <p>המיקום הממוצע השתפר ב-3.4 מקומות, ואחוז ההקלקה מהתוצאות עלה פי 2.3. כלומר האתר לא רק מופיע גבוה יותר, אלא גם גורם ליותר אנשים ללחוץ.</p>
     </div>
     <div class="card">
       <span class="badge warn"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5 14.5 13H1.5L8 2.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 6.6v2.8M8 11.4h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg> מה צריך מעקב</span>
@@ -381,18 +405,18 @@ footer .sign { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; f
 
       <div class="panel">
         <h3>מיקום ממוצע</h3>
-        <svg viewBox="0 0 240 132" role="img" aria-label="מיקום ממוצע: 25.2 באוגוסט, 21.9 בספטמבר, שיפור של 3.3 מקומות">
+        <svg viewBox="0 0 240 132" role="img" aria-label="מיקום ממוצע: 25.2 באוגוסט, 21.8 בספטמבר, שיפור של 3.4 מקומות">
           <line x1="18" y1="110" x2="222" y2="110" stroke="var(--grid)" stroke-width="1"/>
           <path d="M40 91.9 L200 38.1 L200 110 L40 110 Z" fill="url(#fUp)"/>
           <path d="M40 91.9 L200 38.1" stroke="url(#gUp)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
           <circle cx="40" cy="91.9" r="4.5" fill="var(--surface)" stroke="var(--series)" stroke-width="2"><title>אוגוסט: מיקום ממוצע 25.2</title></circle>
-          <circle cx="200" cy="38.1" r="6" fill="var(--series-2)" stroke="var(--surface)" stroke-width="2.5"><title>ספטמבר: מיקום ממוצע 21.9</title></circle>
+          <circle cx="200" cy="38.1" r="6" fill="var(--series-2)" stroke="var(--surface)" stroke-width="2.5"><title>ספטמבר: מיקום ממוצע 21.8</title></circle>
           <text x="40" y="81" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink-3)">25.2</text>
-          <text x="200" y="26" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="600" fill="var(--ink)">21.9</text>
+          <text x="200" y="26" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="600" fill="var(--ink)">21.8</text>
           <text x="40" y="126" text-anchor="middle" font-family="IBM Plex Sans Hebrew, sans-serif" font-size="11" fill="var(--ink-3)">אוגוסט</text>
           <text x="200" y="126" text-anchor="middle" font-family="IBM Plex Sans Hebrew, sans-serif" font-size="11" fill="var(--ink-3)">ספטמבר</text>
         </svg>
-        <div class="note">▲ שיפור של 3.3 מקומות. הציר הפוך: למעלה = מיקום טוב יותר</div>
+        <div class="note">▲ שיפור של 3.4 מקומות. הציר הפוך: למעלה = מיקום טוב יותר</div>
       </div>
 
       <div class="panel">
@@ -440,7 +464,7 @@ footer .sign { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; f
         <tr><td>כניסות מחיפוש</td><td class="n">73</td><td class="n">118</td><td class="n up">+45 (61.6%)</td><td>יותר אנשים הגיעו לאתר</td></tr>
         <tr><td>חשיפות</td><td class="n">29,800</td><td class="n">20,800</td><td class="n down">-9,000 (30.2%)</td><td>האתר הוצג בפחות חיפושים</td></tr>
         <tr><td>אחוז הקלקה</td><td class="n">0.25%</td><td class="n">0.57%</td><td class="n up">פי 2.3</td><td>מי שראה את האתר, לחץ יותר</td></tr>
-        <tr><td>מיקום ממוצע</td><td class="n">25.2</td><td class="n">21.9</td><td class="n up">3.3 מקומות</td><td>האתר מופיע גבוה יותר</td></tr>
+        <tr><td>מיקום ממוצע</td><td class="n">25.2</td><td class="n">21.8</td><td class="n up">3.4 מקומות</td><td>האתר מופיע גבוה יותר</td></tr>
       </tbody>
     </table>
   </div>
@@ -458,8 +482,8 @@ footer .sign { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; f
       <p>הירידה בחשיפות לצד עלייה בכניסות ובמיקום אומרת שהאתר הוצג פחות בחיפושים רחוקים, שממילא כמעט לא הניבו לחיצות, ויותר בחיפושים שבהם הוא רלוונטי. זו מגמה חיובית, אבל צריך לראות שהיא מתייצבת באוקטובר.</p>
     </div>
     <div class="card">
-      <h3>מיקום 21.9 הוא עדיין עמוד שלישי</h3>
-      <p>מיקום ממוצע של 21.9 פירושו שהאתר נמצא ברובו בעמוד השני והשלישי של גוגל. כאן נמצא כל הפוטנציאל: מעבר לעמוד הראשון במונחים המרכזיים מכפיל את הכניסות הרבה יותר מאשר שיפור של אחוז ההקלקה.</p>
+      <h3>מיקום 21.8 הוא עדיין עמוד שלישי</h3>
+      <p>מיקום ממוצע של 21.8 פירושו שהאתר נמצא ברובו בעמוד השני והשלישי של גוגל. כאן נמצא כל הפוטנציאל: מעבר לעמוד הראשון במונחים המרכזיים מכפיל את הכניסות הרבה יותר מאשר שיפור של אחוז ההקלקה.</p>
     </div>
   </div>
 </section>
@@ -523,8 +547,113 @@ footer .sign { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; f
   </div>
 </section>
 
+<section>
+  <div class="sec-head"><h2>פירוט מלא של העבודה</h2><span class="sub">כל 46 העדכונים, לפי תחום</span></div>
+  <div class="detail-grid">
+
+    <div class="detail">
+      <h3><span class="dnum">01</span> תשתית, מהירות וכתובות</h3>
+      <ul>
+        <li>מעבר מוורדפרס לאתר סטטי: 166 עמודים נבנו מחדש</li>
+        <li>כל הכתובות הקיימות נשמרו, ולכתובות שלא היה להן מקבילה נוספו הפניות 301</li>
+        <li>תוקנו הפניות משובשות שהיו מפנות לכתובות שבורות</li>
+        <li>אתרי הבדיקה נחסמו ממנועי חיפוש, כדי שלא יתחרו באתר</li>
+        <li>קבצי העיצוב והתמונות קיבלו גרסה לפי תוכן, לשמירה יעילה בדפדפן</li>
+        <li>עמוד הבית נבנה בפריסת דף נחיתה, עם לוגו אחד ושני מספרי טלפון בראש העמוד</li>
+      </ul>
+    </div>
+
+    <div class="detail">
+      <h3><span class="dnum">02</span> לידים</h3>
+      <ul>
+        <li>טופס הפניות תוקן: מנגנון ההגנה שבו דחה כל פנייה אמיתית שנשלחה</li>
+        <li>הפניות נשלחות מאז דרך השרת, ישירות למייל של מנחם</li>
+      </ul>
+    </div>
+
+    <div class="detail">
+      <h3><span class="dnum">03</span> תיקוני תוכן</h3>
+      <ul>
+        <li>נסרקו כל עמודי האתר, ואותרו שגיאות כתיב, סתירות וטענות שגויות</li>
+        <li>184 כללי תיקון טקסט שמוחלים בכל בנייה, 611 יישומים בפועל</li>
+        <li>כל המחירונים עודכנו לשנת 2026</li>
+        <li>הטענה "קבלן מורשה" הוסרה מעמוד הבית</li>
+        <li>הוותק אומת ל-20 שנות ניסיון, ותוקן העמוד היחיד שכתב מספר אחר</li>
+        <li>תוקנו חמש סתירות במחירים ובאחריות: זיפות, סנפלינג, מרפסת מרוצפת ושני עמודי מרזבים</li>
+      </ul>
+    </div>
+
+    <div class="detail">
+      <h3><span class="dnum">04</span> הרחבת תוכן קיים</h3>
+      <ul>
+        <li>ארבעה עמודים דקים הורחבו: רטיבות קפילארית, איטום קירות חיצוניים, איטום גגות מרוצפים ואיטום גגות מבטון</li>
+        <li>כל אחד מהם קיבל 10 שאלות ותשובות אמיתיות</li>
+        <li>16 עמודי ערים קיבלו תוכן שנכון רק להם: חיפה, ירושלים, תל אביב, ראשון לציון, מודיעין, רמת גן, נתניה, אשדוד, רחובות, בת ים, גבעתיים, הרצליה, רעננה, רמת השרון, כפר סבא וחדרה</li>
+        <li>בשישה עמודים שולבו ביטויי חיפוש אמיתיים מ-Search Console</li>
+      </ul>
+    </div>
+
+    <div class="detail">
+      <h3><span class="dnum">05</span> עמודים חדשים</h3>
+      <ul>
+        <li>איטום חניון תת קרקעי</li>
+        <li>איטום גגות בצור יצחק</li>
+        <li>איטום גגות בכפר חב"ד</li>
+        <li>איטום גגות בבת חפר</li>
+        <li>כל עמוד חדש קיבל קישורים נכנסים מעמודים קיימים ורלוונטיים</li>
+      </ul>
+    </div>
+
+    <div class="detail">
+      <h3><span class="dnum">06</span> סמכות וזיהוי הכותב</h3>
+      <ul>
+        <li>מנחם טולדו הוחלף ככותב בנתונים המובנים במקום שם המשתמש הטכני של וורדפרס</li>
+        <li>בכל עמוד נוספה שורת מחברים גלויה</li>
+        <li>שני המייסדים הוצגו בעמוד אודות ובנתוני העסק</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>קישורים חיצוניים שנרכשו</h2><span class="sub">נבדק ב-22.10.2026</span></div>
+  <div class="link-card">
+    <div class="lc-head">
+      <span class="lc-domain">surveyor10.co.il</span>
+      <span class="lc-flag ok">קישור עוקב (dofollow)</span>
+      <span class="lc-flag">העמוד פתוח לסריקה</span>
+    </div>
+    <div class="lc-rows">
+      <div><span class="lc-k">מהעמוד</span><span class="lc-v">"כמה מטר הגג שלך?" זו השאלה הכי גרועה שאפשר לשאול בטלפון</span></div>
+      <div><span class="lc-k">טקסט הקישור</span><span class="lc-v mono">איטום גגות בתל אביב</span></div>
+      <div><span class="lc-k">לאן מפנה</span><span class="lc-v mono">roofschamp.co.il/איטום-גגות-בתל-אביב/</span></div>
+      <div><span class="lc-k">אורך העמוד המקשר</span><span class="lc-v mono">כ-5,500 מילים</span></div>
+    </div>
+    <p class="lc-note">הקישור מצביע על עמוד תל אביב ולא על עמוד הבית, וטקסט הקישור תואם לנושא העמוד. זה המצב הרצוי: גוגל מקבל אות ברור על מה העמוד הזה. הקישור יושב בתוך מאמר ארוך באתר של מודד מוסמך, כלומר בהקשר ענייני ולא ברשימת קישורים. השפעה של קישור חדש לא נמדדת בימים: היא מופיעה בדרך כלל אחרי שגוגל סורק מחדש את שני העמודים, ולכן נעקוב אחריה בדוחות הבאים.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>מאז סוף החודש</h2><span class="sub">אוקטובר, עד 22.10</span></div>
+  <div class="timeline">
+    <div class="tl">
+      <div class="when">01.10</div>
+      <div class="what"><b>מערכת דוחות פרטית באתר</b><span>הדוח הזה יושב על הדומיין שלכם, חסום למנועי חיפוש בשלוש שכבות ולא מקושר מאף עמוד.</span></div>
+    </div>
+    <div class="tl key">
+      <div class="when">02.10</div>
+      <div class="what"><b>עמוד חדש: תיקוני איטום</b><span>עמוד על תיקון שכבת האיטום בכל מקום במבנה, וההחלטה בין תיקון נקודתי לאיטום מחדש. מקבל קישורים מעמודי תיקון גגות ואיתור נזילות.</span></div>
+    </div>
+    <div class="tl">
+      <div class="when">06-22.10</div>
+      <div class="what"><b>שתי טיוטות מוכנות לאישור</b><span>איטום גגות במגדל העמק, שלפי Search Console היו לו 93 חשיפות בספטמבר בלי שום עמוד שעונה עליהן, ואיטום גגות באבשלום.</span></div>
+    </div>
+  </div>
+</section>
+
 <section class="next">
-  <div class="sec-head"><h2>מה מתוכנן לאוקטובר</h2></div>
+  <div class="sec-head"><h2>המשך העבודה</h2><span class="sub">סדר העדיפויות הנוכחי</span></div>
   <ol>
     <li><div><b>חמש השאלות הנפוצות שחוזרות בכ-110 עמודים</b><span>אותן חמש שאלות ותשובות מופיעות כמעט בכל עמוד באתר, והן חלק מרכזי מהתוכן הכפול שנשאר. כתיבה מחדש שלהן משפרת את כל העמודים בבת אחת.</span></div></li>
     <li><div><b>הרחבת עמודי השירות שמביאים לקוחות</b><span>איתור נזילות ואיטום בניין הם מהעמודים המקושרים באתר, ושניהם קצרים מדי ביחס למתחרים.</span></div></li>
