@@ -953,7 +953,7 @@ ${isHome ? renderHome() : `    ${heroSection}
         ${CFG.footer.legal.map(l => `<a href="${esc(l.href)}">${esc(l.text)}</a>`).join('')}
       </nav>
     </div>
-    <p class="footer-credit">האתר מאוחסן ומתוחזק באהבה על ידי ברנדלי<img src="/assets/img/brandli.webp" alt="ברנדלי" width="382" height="112" loading="lazy" decoding="async"></p>
+    <p class="footer-credit">האתר מאוחסן ומתוחזק באהבה על ידי <a href="https://brandli.co.il/" target="_blank" rel="noopener">ברנדלי</a><img src="/assets/img/brandli.webp" alt="ברנדלי" width="382" height="112" loading="lazy" decoding="async"></p>
   </div>
 </footer>
 
