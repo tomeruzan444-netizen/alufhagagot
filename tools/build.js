@@ -953,6 +953,7 @@ ${isHome ? renderHome() : `    ${heroSection}
         ${CFG.footer.legal.map(l => `<a href="${esc(l.href)}">${esc(l.text)}</a>`).join('')}
       </nav>
     </div>
+    <p class="footer-credit">האתר מאוחסן ומתוחזק באהבה על ידי ברנדלי<img src="/assets/img/brandli.webp" alt="ברנדלי" width="382" height="112" loading="lazy" decoding="async"></p>
   </div>
 </footer>
 
@@ -989,6 +990,9 @@ fs.mkdirSync(path.join(OUT, 'assets/js'), { recursive: true });
 fs.copyFileSync('src/css/site.css', path.join(OUT, 'assets/css/site.css'));
 fs.copyFileSync('src/send.php', path.join(OUT, 'send.php'));
 fs.copyFileSync('src/js/site.js', path.join(OUT, 'assets/js/site.js'));
+// images that belong to the site itself, not to the WordPress media library
+fs.mkdirSync(path.join(OUT, 'assets/img'), { recursive: true });
+for (const f of fs.readdirSync('src/img')) fs.copyFileSync(path.join('src/img', f), path.join(OUT, 'assets/img', f));
 
 let written = 0, skipped = [];
 for (const page of pages) {
