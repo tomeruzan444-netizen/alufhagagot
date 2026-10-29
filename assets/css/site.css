@@ -496,6 +496,12 @@ figure.media figcaption { font-size: .88rem; color: var(--ink-3); text-align: ce
   align-items: center; justify-content: space-between; font-size: .88rem;
 }
 .footer-bottom nav { display: flex; flex-wrap: wrap; gap: .5rem 1.1rem; }
+.footer-credit {
+  margin: 0; padding-bottom: 1.1rem; display: flex; align-items: center; justify-content: center;
+  gap: .5rem; font-size: .78rem; opacity: .72;
+}
+.footer-credit img { height: 17px; width: auto; background: #fff; border-radius: 5px; padding: 3px 7px; }
+@media (max-width: 560px) { .footer-credit { font-size: .74rem; } }
 
 /* ---------- sticky mobile call bar ---------- */
 .callbar {
