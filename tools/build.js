@@ -309,7 +309,7 @@ function renderForm(block, page, idx) {
 function renderFaq(block) {
   const items = block.items.map(it =>
     `<details class="faq-item">
-          <summary>${esc(it.q)}</summary>
+          <summary>${esc(FIX.fixText(it.q, CURRENT_PAGE))}</summary>
           <div class="faq-body">${enhanceHtml(it.a) || ''}</div>
         </details>`).join('\n        ');
   return `<div class="faq">\n        ${items}\n      </div>`;

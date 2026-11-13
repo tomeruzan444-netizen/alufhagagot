@@ -35,6 +35,10 @@ module.exports = {
 
   /* --- duplicate or missing meta description --- */
   description: {
+    // 13.11.2026 - the stock closing phrase was replaced in the body, and the
+    // longer wording pushed this description past 155 characters.
+    '/תיקון-גגות/':
+      'תיקון גגות: נזילה, רטיבות, רעף שבור או איטום שהתיישן. נעלה לראות את הגג, נגיד מה הוא באמת צריך, ונתקן רק את מה שצריך תיקון.',
     '/איטום-גגות-בבית-שמש/':
       'איטום גגות בבית שמש: זיפות, יריעות ביטומניות ותיקון נזילות. מחירון שקוף, אחריות בכתב וניסיון של מעל 20 שנה. צרו קשר להצעת מחיר חינם.',
     '/איטום-גגות-בקדימה-צורן/':
