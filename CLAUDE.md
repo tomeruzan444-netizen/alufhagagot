@@ -46,6 +46,13 @@ The non-negotiables from it:
   pages**, in the body copy, with context. Prefer linking words that already
   exist (no copy change); a new sentence only when approved. Record each one
   in `tools/inbound-links.js` - the build fails if a rule stops matching.
+- **New pages from 14.11.2026 also follow the guide's "כללים לעמודים חדשים"
+  section**, which overrides any conflicting rule there: no fixed template
+  (section order, H2 names and opening differ per page), at least one
+  original infographic, 2-5 body links, and no AI tells (rhetorical-question
+  opener, spaced hyphen " - " as a pause, "לא רק... אלא", bold lead-in
+  bullets, headings that start with a number). Existing pages are not
+  rewritten for it.
 - Run the pre-publish checklist at the end of the guide.
 
 When Menachem confirms a fact, update the fact sheet and add a line to the

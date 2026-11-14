@@ -229,7 +229,7 @@ function check(page, crawled) {
   const sibling = new Set(files().map((f) => frontMatter(fs.readFileSync(f, 'utf8')).meta)
     .filter((m) => m.status === 'published').map((m) => m.path));
   const broken = links.filter((l) => !crawled.some((p) => p.pathname === decodeURI(l)) && !sibling.has(decodeURI(l)));
-  add(links.length >= 3 && links.length <= 5, '3-5 קישורים יוצאים', links.length + ' קישורים');
+  add(links.length >= 2 && links.length <= 5, '2-5 קישורים יוצאים', links.length + ' קישורים');
   add(!broken.length, 'כל הקישורים היוצאים קיימים', broken.join(', '));
   const inbound = INBOUND.RULES.filter((r) => r.to === meta.path).length;
   add(inbound >= 1 && inbound <= 3, '1-3 קישורים נכנסים ב-inbound-links.js', inbound + ' כללים');
