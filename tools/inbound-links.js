@@ -110,6 +110,43 @@ const RULES = [
     afterText: 'מים הם מקור חיים, אבל נזילה בבית',
     sentence: 'אחרי שמוצאים מאיפה המים נכנסים מגיע השלב הבא, [תיקוני איטום], ושם ההחלטה היא אם תיקון נקודתי מספיק.',
   },
+  /* 17.11.2026 - from the Search Console analysis (19.10-15.11.2026), at the
+     owner's request. Links between EXISTING pages, so Google sends each query
+     to the page written for it instead of a neighbour that competes with it:
+       "איטום גגות בצפון" (460 impressions) ranked /איטום-גגות-ברשפון/ at 34,
+       "זיפות גגות" (349) ranked /איטום-גגות-שדרות/ at 82.
+     All of them link words that are already in the text - not a word of copy
+     changes. `context` picks the right occurrence when the phrase also
+     appears earlier on the page (e.g. in the price table). */
+  // (/איטום-גגות-בחיפה/ already links "איטום גגות בצפון" in its body)
+  {
+    from: '/איטום-גגות-בנהריה/',
+    to: '/איטום-גגות-בצפון/',
+    phrase: 'בצפון הארץ',
+  },
+  {
+    from: '/איטום-גגות-בקרית-שמונה/',
+    to: '/איטום-גגות-בצפון/',
+    phrase: 'בצפון הארץ',
+  },
+  {
+    from: '/איטום-גגות-בירושלים/',
+    to: '/זיפות-גגות/',
+    phrase: 'זיפות גגות',
+    context: 'זיפות גגות בירושלים היא פתרון תחזוקה',
+  },
+  {
+    from: '/איטום-גגות-בכרמיאל/',
+    to: '/זיפות-גגות/',
+    phrase: 'זיפות גגות',
+    context: 'זיפות גגות היא שיטה מסורתית',
+  },
+  {
+    from: '/איטום-גגות-באשדוד/',
+    to: '/זיפות-גגות/',
+    phrase: 'זיפות גגות',
+    context: 'זיפות גגות היא שיטת האיטום הנפוצה',
+  },
   // {
   //   from: '/איטום-בניין/',             // existing page that gets the link
   //   to: '/איטום-בסנפלינג/',             // the new page
@@ -136,15 +173,25 @@ function insideSkipped(node) {
   return false;
 }
 
-/** Wraps the first eligible occurrence of the rule's phrase in a link. */
+/** Wraps the first eligible occurrence of the rule's phrase in a link.
+    With `context`, only an occurrence inside that longer run of text counts. */
 function wrapPhrase($, root, rule, href) {
   const want = rule.phrase.replace(LONG_DASH, '-');
+  const ctx = rule.context ? rule.context.replace(LONG_DASH, '-') : null;
+  if (ctx && !ctx.includes(want)) throw new Error('inbound-links: context must contain the phrase - ' + rule.from + ' -> ' + rule.to);
   let hit = false;
   $(root).find('*').addBack().contents().each((i, node) => {
     if (hit || node.type !== 'text' || !node.data || insideSkipped(node)) return;
     // long dashes are normalised later in the build, one character for one,
     // so matching on the normalised copy keeps the indices valid
-    const at = node.data.replace(LONG_DASH, '-').indexOf(want);
+    const text = node.data.replace(LONG_DASH, '-');
+    let at;
+    if (ctx) {
+      const c = text.indexOf(ctx);
+      at = c < 0 ? -1 : c + ctx.indexOf(want);
+    } else {
+      at = text.indexOf(want);
+    }
     if (at < 0) return;
     const before = node.data.slice(0, at);
     const match = node.data.slice(at, at + want.length);
@@ -199,7 +246,7 @@ function assertAllApplied(knownPaths) {
     perTarget[r.to] = (perTarget[r.to] || 0) + 1;
     if (!done.has(r) && knownPaths.has(r.from)) {
       problems.push(id + ': ' + (r.phrase
-        ? 'phrase "' + r.phrase + '" not found in the article body'
+        ? 'phrase "' + r.phrase + '"' + (r.context ? ' (in "' + r.context + '")' : '') + ' not found in the article body'
         : 'paragraph starting "' + r.afterText + '" not found'));
     }
   }
