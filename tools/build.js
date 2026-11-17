@@ -447,11 +447,15 @@ function renderPage(page) {
   const headingIds = [];      // for the table of contents
   const isHome = page.pathname === '/';
 
-  // assign stable ids to article headings so the TOC can link to them
+  // assign stable ids to article headings so the TOC can link to them.
+  // Built from the corrected text (text-fixes.js), the same text the heading
+  // renders with - otherwise a corrected heading kept its old wording in the
+  // TOC and in its #anchor (e.g. "הוד השרון" on the ראש העין page).
   page.blocks.forEach(b => {
     if (b.type === 'heading' && b.level >= 2 && b.level <= 3 && b.region === 'article') {
-      b._id = slugifyAnchor(b.text, anchors);
-      headingIds.push({ id: b._id, text: b.text, level: b.level });
+      const text = FIX.fixText(b.text, CURRENT_PAGE);
+      b._id = slugifyAnchor(text, anchors);
+      headingIds.push({ id: b._id, text, level: b.level });
     }
   });
 
